@@ -1,14 +1,22 @@
+import { useEffect } from 'react';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Choose any icon set
 import { LibraryScreen } from "./library/library";
-import { BottomSheetDelegate } from "~/components/core/layout/bottomSheetModal/bottomSheetDelegate/bottomSheetDelegate";
 import { Account } from "./account/account";
 import { Revise } from "./revise/revise";
 import { Explore } from "./explore/explore";
+import { BottomSheetDelegate } from "~/components/core/layout/bottomSheetModal/bottomSheetDelegate/bottomSheetDelegate";
+import { useStores } from "~/lib/state/storeProvider";
 
 const Tab = createBottomTabNavigator();
 
 export function MainApp() {
+    const { setStore, settingStore } = useStores();
+
+    useEffect(() => {
+        setStore.initialise(settingStore.learningLanguage);
+    }, []);
+
     return (
         <>
             <Tab.Navigator>

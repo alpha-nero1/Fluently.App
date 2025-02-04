@@ -1,16 +1,21 @@
-"use client"
-
 import React, { createContext, useContext, ReactNode, useState, useEffect } from "react";
 import { SettingStore } from "./stores/settingsStore";
 import { SetStore } from "./stores/setStore";
-import { SnackbarStore } from "./stores/snackbarStore";
 import { BottomSheetStore } from "./stores/bottomSheetStore";
+import { DictionaryStore } from "./stores/dictionaryStore";
+
+type AllStores = {
+  settingStore: SettingStore;
+  setStore: SetStore;
+  bottomSheetStore: BottomSheetStore;
+  dictionaryStore: DictionaryStore;
+}
 
 // Type for the store context
-const stores = {
+const stores: AllStores = {
   settingStore: new SettingStore(),
   setStore: new SetStore(),
-  snackbarStore: new SnackbarStore(),
+  dictionaryStore: new DictionaryStore(),
   bottomSheetStore: new BottomSheetStore()
 }
 
@@ -49,5 +54,5 @@ export const useStores = () => {
       return () => subscribers.forEach((unsubscribe) => unsubscribe());
     });
   
-    return allStores;
+    return allStores as AllStores;
 }

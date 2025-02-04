@@ -12,7 +12,6 @@ export type TextType =
 
 interface Props {
     type?: TextType;
-    className?: string;
     children: string | any;
     bold?: boolean;
     italic?: boolean;

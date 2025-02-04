@@ -5,12 +5,14 @@ import { useApiContext } from '~/lib/hooks/useApiContext';
 import { ContentApi } from '~/api/contentApi';
 import { ContentReader } from '~/components/contentReader/contentReader';
 import { Loader } from '~/components/core/layout/loader/loader';
+import { useStores } from '~/lib/state/storeProvider';
 
 import styles from './content.styles';
 
 export default function ContentScreen({ route }: any) {
     const basicContent = route.params.content as BasicContent;
     const [spans, setSpans] = useState<string[][]>([]);
+    const { dictionaryStore } = useStores();
 
     const content = useApiContext({
         id: `library_content_${basicContent.contentId}`,
@@ -30,6 +32,7 @@ export default function ContentScreen({ route }: any) {
                 });
             });
 
+            dictionaryStore.updateDictionary(content.language, content.words);
             setSpans(allSpans);
         }
     });
@@ -47,8 +50,7 @@ export default function ContentScreen({ route }: any) {
                 ? <ContentReader 
                     language={basicContent.language}
                     spans={spans} 
-                    dictionary={content.data.words} 
-                    linesPerPage={8} 
+                    dictionary={dictionaryStore.getDictionary(basicContent.language) || content.data.words} 
                 />
                 : null
             }

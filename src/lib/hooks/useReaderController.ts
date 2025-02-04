@@ -12,6 +12,8 @@ export interface IReaderController {
     page: number;
     pages: string[][][];
     setPage: (newPage: number) => void;
+    // Completion from 0 to 1.
+    complete: number;
 }
 
 const getPages = (content: string[][], charsPerLine: number, linesPerPage: number): string[][][] => {
@@ -77,6 +79,7 @@ export const useReaderController = (opts: ReaderControllerOptions) => {
         totalPages: pages.length,
         page,
         pages,
-        setPage
+        setPage,
+        complete: ((page + 1) / pages.length)
     }
 }

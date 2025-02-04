@@ -7,6 +7,11 @@ import { BasicContent } from "./types/basicContent";
 import { AppSettings } from "~/lib/appSettings";
 import { WordDictionary } from "./types/wordDictionary";
 
+axios.interceptors.request.use(full => {
+    console.log('Executed api call to: ', full.url);
+    return full;
+});
+
 /**
  * Code to reach out to the /content api.
  */

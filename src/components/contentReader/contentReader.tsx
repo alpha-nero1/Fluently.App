@@ -12,6 +12,8 @@ import { useStores } from '~/lib/state/storeProvider';
 import { BottomSheetType } from '~/lib/state/stores/bottomSheetStore';
 
 import styles from './contentReader.styles';
+import { LinearProgress } from '../core/layout/linearProgress/linearProgress';
+import { VerticalSpacer } from '../core/layout/verticalSpacer/verticalSpacer';
 
 const { width, height } = Dimensions.get('window');
 
@@ -22,15 +24,14 @@ const { width, height } = Dimensions.get('window');
  * the right amount of content to the user.
  */
 const useableWidth = width - 32;
-const useableHeight = height - 200;
-const charWidth = 10;
-const charHeight = 90;
+const useableHeight = height - 260;
+const charWidth = 12;
+const charHeight = 40;
 const charsPerLine = useableWidth / charWidth;
-const linesPerPage = useableHeight / charHeight;
+const linesPerPage = (useableHeight / charHeight);
 
 interface Props {
     language: Language;
-    linesPerPage: number;
     spans: string[][];
     dictionary: { [key in string]: Word }
 }
@@ -41,7 +42,7 @@ interface Props {
  * to the user.
  */
 export const ContentReader = (props: Props) => {
-    const { bottomSheetStore } = useStores();
+    const { bottomSheetStore, dictionaryStore } = useStores();
     const { spans, dictionary } = props;
     const [selectedSpan, setSelectedSpan] = useState('');
     const readerController = useReaderController({ spans, charsPerLine, linesPerPage });
@@ -67,7 +68,7 @@ export const ContentReader = (props: Props) => {
         (async () => {
             if (readerController.page && !pageWordLoading) {
                 const bufferSize = 2;
-                const wordsPresentThreshold = 10;
+                const wordsPresentThreshold = 20;
                 const firstPage = readerController.page;
                 const lastPage = Math.min(
                     readerController.page + bufferSize,
@@ -78,9 +79,14 @@ export const ContentReader = (props: Props) => {
                     const wordsPresent = countWordsPresent(pg, dictionary);
                     if (wordsPresent < wordsPresentThreshold) {
                         const stringContent = spansToString(pg);
-                        setPageWordLoading(i);
-                        await ContentApi.enrich(props.language, stringContent);
-                        setPageWordLoading(null);
+                        try {
+                            setPageWordLoading(i);
+                            const newDictionary = await ContentApi.enrich(props.language, stringContent);
+                            dictionaryStore.updateDictionary(props.language, newDictionary);
+                            setPageWordLoading(null);
+                        } catch (e) {
+                            setPageWordLoading(null);
+                        }
                     }
                 }
             }
@@ -89,6 +95,9 @@ export const ContentReader = (props: Props) => {
 
     return (
         <>
+            <LinearProgress progress={readerController.complete} />
+            <VerticalSpacer spacing={4} />
+            <Txt type='subtitle'>{readerController.page + 1} / {readerController.totalPages}</Txt>
             <View style={styles.viewport}>
                 <Book
                     horizontalPadding={32}
@@ -105,7 +114,6 @@ export const ContentReader = (props: Props) => {
                         />
                     )}
                 />
-                <Txt type='subtitle'>{readerController.page + 1} / {readerController.totalPages}</Txt>
             </View>
         </>
         

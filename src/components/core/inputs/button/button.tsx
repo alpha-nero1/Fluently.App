@@ -1,0 +1,61 @@
+import React from "react";
+import {
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+  View,
+  ViewStyle,
+  TextStyle,
+} from "react-native";
+
+import { styles, typeStyles } from './button.styles';
+
+export type ButtonType = "info" | "special" | "unknown";
+
+interface IButtonProps {
+    id?: string;
+    type?: ButtonType;
+    width?: number;
+    height?: number;
+    children: string;
+    isLoading?: boolean;
+    disabled?: boolean;
+    onPress?: () => void;
+}
+
+/**
+ *  Standard button component.
+ */
+export const Button = (props: IButtonProps) => {
+    const { id, type = "info", children, isLoading, disabled, onPress } = props;
+    const buttonStyles: ViewStyle = {
+        ...styles.button,
+        ...typeStyles[type],
+        ...(disabled || isLoading ? styles.disabledButton : {}),
+    };
+    if (props.height) buttonStyles.height = props.height;
+    if (props.width) buttonStyles.width = props.width;
+
+    const textStyles: TextStyle = {
+        ...styles.text,
+        ...(disabled || isLoading ? styles.disabledText : {}),
+    };
+
+    return (
+        <TouchableOpacity
+            style={buttonStyles}
+            disabled={disabled || isLoading}
+            onPress={onPress}
+            activeOpacity={0.7}
+        >
+            {isLoading 
+            ? (
+                <View style={styles.loaderContainer}>
+                    <ActivityIndicator color="white" />
+                </View>
+            ) : (
+                <Text style={textStyles}>{children}</Text>
+            )}
+        </TouchableOpacity>
+    );
+}

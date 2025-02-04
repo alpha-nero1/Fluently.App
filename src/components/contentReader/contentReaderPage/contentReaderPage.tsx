@@ -2,6 +2,7 @@ import { View, Text, Dimensions } from "react-native";
 import { VerticalSpacer } from "~/components/core/layout/verticalSpacer/verticalSpacer";
 import { Word } from "~/api/types/word";
 import { useEffect, useState } from "react";
+import { useStores } from "~/lib/state/storeProvider";
 
 import styles from './contentReaderPage.styles';
 
@@ -23,7 +24,8 @@ const viewWidth = width - 32;
 export function ContentReaderPage(props: Props) {
     const { spans, isLoading, dictionary, selectedSpan, setSelectedSpan } = props;
     const [spansLoading, setSpansLoading] = useState<Set<string>>(new Set<string>())
-
+    const { setStore, settingStore } = useStores();
+    
     const alternateSpansLoading = () => {
         if (!isLoading) return;
         setTimeout(() => {
@@ -47,7 +49,38 @@ export function ContentReaderPage(props: Props) {
         } else {
             setSpansLoading(new Set<string>())
         }
-    }, [isLoading])
+    }, [isLoading]);
+
+    const spanOnSelected = (newSpan: string) => {
+        const word = newSpan.split('|')[0];
+        if (!dictionary[word]) return;
+
+        const keyToSet = newSpan === selectedSpan
+            ? ''
+            : newSpan;
+        
+        setSelectedSpan(keyToSet);
+    }
+
+    /**
+     *  Handle all the complicated use cases of text styling. 
+     */
+    const getSpanStyle = (span: string, spanKey: string) => {
+        let spanStyle: any[] = [styles.spansegment];
+        if (span && spansLoading.has(span)) {
+            spanStyle.push(styles.spansegmentLoading);
+        }
+        if (dictionary[span]) {
+            spanStyle.push(styles.spansegmentAvailable);
+        }
+        if (spanKey === selectedSpan) {
+            spanStyle.push(styles.spansegmentSelected);
+        }
+        if (setStore?.cards?.has(span)) {
+            spanStyle.push(styles.spansegmentSaved);
+        }
+        return spanStyle;
+    }
 
     return (
         <View style={{ ...styles.page, width: viewWidth }}>
@@ -57,24 +90,14 @@ export function ContentReaderPage(props: Props) {
                         return <VerticalSpacer key={`line-${i}`} spacing={16} />
                     }
                     return (
-                        <View key={`${lineSpan.join('-')}-${i}`} style={styles.paragraph}>
+                        <View key={`${lineSpan.join('-')}-${i}`} style={styles.line}>
                             {lineSpan.map((span, j) => {
-                                let spanStyle: any[] = [styles.spansegment];
-                                if (span && spansLoading.has(span)) {
-                                    spanStyle.push(styles.spansegmentLoading);
-                                }
-                                if (dictionary[span]) {
-                                    spanStyle.push(styles.spansegmentAvailable);
-                                }
                                 const spanKey = `${span}|${i}|${j}`;
-                                if (spanKey === selectedSpan) {
-                                    spanStyle.push(styles.spansegmentSelected);
-                                }
                                 return (
                                     <Text
                                         key={spanKey} 
-                                        style={spanStyle} 
-                                        onPress={() => setSelectedSpan(spanKey)}
+                                        style={getSpanStyle(span, spanKey)} 
+                                        onPress={() => spanOnSelected(spanKey)}
                                     >
                                         {span}
                                     </Text>
