@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { View, Dimensions, Text, FlatList } from 'react-native'
+import { View, Dimensions } from 'react-native'
 import { ContentReaderPage } from './contentReaderPage/contentReaderPage';
 import { Txt } from '../core/layout/txt/Txt';
 import { useReaderController } from '~/lib/hooks/useReaderController';
-import { Word } from '~/api/types/word';
 import { Book } from '../core/layout/book/book';
 import { countWordsPresent, spansToString } from '~/lib/utils/textUtils';
 import { ContentApi } from '~/api/contentApi';
@@ -33,7 +32,6 @@ const linesPerPage = (useableHeight / charHeight);
 interface Props {
     language: Language;
     spans: string[][];
-    dictionary: { [key in string]: Word }
 }
 
 /**
@@ -43,10 +41,12 @@ interface Props {
  */
 export const ContentReader = (props: Props) => {
     const { bottomSheetStore, dictionaryStore } = useStores();
-    const { spans, dictionary } = props;
+    const { spans } = props;
     const [selectedSpan, setSelectedSpan] = useState('');
     const readerController = useReaderController({ spans, charsPerLine, linesPerPage });
-    const [pageWordLoading, setPageWordLoading] = useState<number |null>(null);
+    const pagesFetched = useRef<Set<number>>(new Set<number>());
+    const [pagesFetching, setPagesFetching] = useState<Set<number>>(new Set<number>());
+    const dictionary = dictionaryStore.getDictionary(props.language) ?? {};
 
     useEffect(() => {
         if (selectedSpan) {
@@ -65,33 +65,62 @@ export const ContentReader = (props: Props) => {
     }
 
     useEffect(() => {
-        (async () => {
-            if (readerController.page && !pageWordLoading) {
-                const bufferSize = 2;
+        console.log('Fetching pages: ', pagesFetching);
+    }, [pagesFetching])
+
+    useEffect(() => {
+        const enrichWords = async () => {
+            if (readerController.pages) {
+                const bufferSize = 5;
+                // We are fetching too many already, employ the stop-gap.
+                if (pagesFetching.size === bufferSize) {
+                    return;
+                }
                 const wordsPresentThreshold = 20;
                 const firstPage = readerController.page;
                 const lastPage = Math.min(
                     readerController.page + bufferSize,
                     readerController.totalPages
                 );
+
                 for (let i = firstPage; i < lastPage; i++) {
+                    if (pagesFetched.current.has(i) || pagesFetching.has(i)) {
+                        continue;
+                    }
+
                     const pg = readerController.pages[i];
                     const wordsPresent = countWordsPresent(pg, dictionary);
                     if (wordsPresent < wordsPresentThreshold) {
                         const stringContent = spansToString(pg);
                         try {
-                            setPageWordLoading(i);
+                            addToFetching(i);
                             const newDictionary = await ContentApi.enrich(props.language, stringContent);
                             dictionaryStore.updateDictionary(props.language, newDictionary);
-                            setPageWordLoading(null);
                         } catch (e) {
-                            setPageWordLoading(null);
+                            console.error('Enrichment failed!', e)
+                        } finally {
+                            pagesFetched.current.add(i);
+                            removeFromFetching(i);
                         }
                     }
                 }
             }
-        })()
-    }, [readerController.page, pageWordLoading]);
+        };
+
+        enrichWords();
+    }, [readerController.pages, readerController.page]);
+
+    const addToFetching = (ind: number) => {
+        const newSet = new Set(pagesFetching);
+        newSet.add(ind);
+        setPagesFetching(newSet);
+    }
+
+    const removeFromFetching = (ind: number) => {
+        const newSet = new Set(pagesFetching);
+        newSet.delete(ind);
+        setPagesFetching(newSet);
+    }
 
     return (
         <>
@@ -106,7 +135,7 @@ export const ContentReader = (props: Props) => {
                     onPageChange={readerController.setPage}
                     renderItem={({ item, index }) => (
                         <ContentReaderPage
-                            isLoading={index === pageWordLoading}
+                            isLoading={pagesFetching.has(index)}
                             spans={item}
                             dictionary={dictionary}
                             selectedSpan={selectedSpan}

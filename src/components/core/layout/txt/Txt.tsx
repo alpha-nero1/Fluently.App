@@ -10,11 +10,12 @@ export type TextType =
     | 'normal' 
     | 'subtitle'
 
-interface Props {
+interface ITxtProps {
     type?: TextType;
     children: string | any;
     bold?: boolean;
     italic?: boolean;
+    disableStandardSpacing?: boolean;
 }
 
 const standardSpacing = 6;
@@ -22,16 +23,17 @@ const standardSpacing = 6;
 /**
  *  A text component to greatly standrdise the display of text in the app. 
  */
-export function Txt(props: Props) {
+export function Txt(props: ITxtProps) {
     const { type, children, bold, italic } = props;
 
     const style = useMemo(() => {
         const stl: any = {
-            marginBottom: standardSpacing,
+            marginBottom: props.disableStandardSpacing ? 0 : standardSpacing,
             fontWeight: bold ? 'bold' : '',
-            fontSize: 12,
+            fontSize: 16,
             color: Colours.Dark,
-            fontFamily: 'Athelas-Regular'
+            fontFamily: 'Athelas-Regular',
+            wordWrap: 'break-word'
         }
 
         if (italic) stl.fontStyle = 'italic';

@@ -1,11 +1,22 @@
 # Fluently App
 
-1) Add user log in and signup functionality []
+1) Add actual user log in and signup functionality []
 2) Add subscription functionality - backend and front end []
-    - Subscription restrictions on front end 
-3) add src lanauge and dest language functionality.
-4) add study set functionality.
+    - Subscription restrictions on front end
+- Dark theming for reading in the dark []
+- App internationalisation []
+- Make words multi language directional []
+- Write gutenberg project scraper []
+- Be able to save books to library []
+- Polish study functionality []
+- Implement library scroll design []
+- add study set functionality []
+- Implement drop down, button, circular progress & flip card components [✅]
+- Implement inspect word text to speech [✅]
+- Complete settings page - select learner & learning language. [✅]
+- Scaffold revise page. [✅]
+- Complete login screen design with floating texts. [✅]
 - Get paginating content working seemlessly [✅]
 - Implement char based pages so that text always perfectly fits. [✅]
 - Integrate sets data with the app [✅]
-- When content is enriched, the dictionary as a whole updates.
+- When content is enriched, the dictionary as a whole updates. [✅]

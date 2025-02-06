@@ -21,11 +21,12 @@ export class Observable<T extends object> {
     }
 
     protected async load(key: string) {
-        return await AsyncStorageUtils.get(key)
+        return await AsyncStorageUtils.get(JSON.parse(key))
     }
 
     protected persist(key: string, value: any) {
-        AsyncStorageUtils.set(key, value);
+        if (!value) return;
+        AsyncStorageUtils.set(key, JSON.stringify(value));
     }
   
     getState(): T {

@@ -10,9 +10,10 @@ export const styles = StyleSheet.create({
         flexDirection: "row"
     },
     text: {
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: "bold",
-        color: "white"
+        color: "white",
+        fontFamily: 'Athelas-Regular'
     },
     loaderContainer: {
         padding: 6

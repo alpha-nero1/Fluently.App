@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
+import { Colours } from '~/lib/themes/colours';
 
 export default StyleSheet.create({
     page: {
-        padding: 16,
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -10,6 +10,11 @@ export default StyleSheet.create({
         alignItems: 'center'
     },
     widget: {
-        paddingBottom: 32
+        width: '70%',
+        minWidth: 300,
+        padding: 32,
+        borderRadius: 8,
+        zIndex: 100,
+        backgroundColor: Colours.Light
     }
 });

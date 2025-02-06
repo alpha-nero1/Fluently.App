@@ -65,19 +65,19 @@ export const Book = <T,>({ data, renderItem, onPageChange, horizontalPadding, ve
                         extrapolate: "clamp"
                     });
 
-                  return (
-                    <Animated.View
-                        style={{
-                            width: totalWidth,
-                            height: totalheight,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            transform: [{ scale }],
-                        }}
-                    >
-                        {renderItem({ item, index })}
-                    </Animated.View>
-                  );
+                    return (
+                        <Animated.View
+                            style={{
+                                width: totalWidth,
+                                height: totalheight,
+                                justifyContent: "center",
+                                alignItems: "center",
+                                transform: [{ scale }],
+                            }}
+                        >
+                            {renderItem({ item, index })}
+                        </Animated.View>
+                    );
                 }}
             />
         </View>

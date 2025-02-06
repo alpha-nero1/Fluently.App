@@ -60,11 +60,11 @@ export const SetApi = (() => {
         .then(res => res.data);
     }
 
-    const addToSet = async (setId: number, setCards: SetCard[]): Promise<SetCard> => {
+    const addToSet = async (setId: number, setCards: SetCard[]): Promise<SetCard[]> => {
       return await axios.post(`${baseUri}/${setId}/card`, {
         setCards
       })
-        .then(res => res.data);
+        .then((res: any) => setCards);
     }
 
     const removeFromSet = async (setId: number, setCardIds: number): Promise<void> => {

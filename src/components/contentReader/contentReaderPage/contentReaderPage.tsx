@@ -1,7 +1,7 @@
 import { View, Text, Dimensions } from "react-native";
 import { VerticalSpacer } from "~/components/core/layout/verticalSpacer/verticalSpacer";
 import { Word } from "~/api/types/word";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useStores } from "~/lib/state/storeProvider";
 
 import styles from './contentReaderPage.styles';
@@ -24,11 +24,18 @@ const viewWidth = width - 32;
 export function ContentReaderPage(props: Props) {
     const { spans, isLoading, dictionary, selectedSpan, setSelectedSpan } = props;
     const [spansLoading, setSpansLoading] = useState<Set<string>>(new Set<string>())
-    const { setStore, settingStore } = useStores();
-    
+    const { setStore } = useStores();
+    const timeout = useRef<NodeJS.Timeout>(null);
+
     const alternateSpansLoading = () => {
-        if (!isLoading) return;
-        setTimeout(() => {
+        if (!isLoading) {
+            if (timeout.current) {
+                clearTimeout(timeout.current);
+                timeout.current = null;
+            }
+            return;
+        }
+        timeout.current = setTimeout(() => {
             const allSpansLoading = new Set<string>();
             spans.forEach(line => {
                 line.forEach(span => {
@@ -47,7 +54,11 @@ export function ContentReaderPage(props: Props) {
         if (isLoading) {
             alternateSpansLoading();
         } else {
-            setSpansLoading(new Set<string>())
+            setSpansLoading(new Set<string>());
+            if (timeout.current) {
+                clearTimeout(timeout.current);
+                timeout.current = null;
+            }
         }
     }, [isLoading]);
 
@@ -110,3 +121,4 @@ export function ContentReaderPage(props: Props) {
         </View>
     );
 }
+

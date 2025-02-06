@@ -50,7 +50,6 @@ export default function ContentScreen({ route }: any) {
                 ? <ContentReader 
                     language={basicContent.language}
                     spans={spans} 
-                    dictionary={dictionaryStore.getDictionary(basicContent.language) || content.data.words} 
                 />
                 : null
             }

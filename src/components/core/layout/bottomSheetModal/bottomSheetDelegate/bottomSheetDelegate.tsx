@@ -1,5 +1,6 @@
 import React from 'react'
 import { Word } from '~/api/types/word';
+import { DropDownBottomSheet } from '~/components/bottomSheets/dropdownBottomSheet/dropdownBottomSheet';
 import { WordBottomSheet } from '~/components/bottomSheets/wordBottomSheet/wordBottomSheet';
 import { useStores } from '~/lib/state/storeProvider'
 import { BottomSheetType } from '~/lib/state/stores/bottomSheetStore';
@@ -17,6 +18,12 @@ export const BottomSheetDelegate = () => {
             <WordBottomSheet 
                 isOpen={bottomSheetStore.message?.type === BottomSheetType.WordBottomSheet}
                 word={bottomSheetStore.message?.data as Word | null}
+                onClose={bottomSheetStore.closeMessage}
+            />
+            <DropDownBottomSheet
+                isOpen={bottomSheetStore.message?.type === BottomSheetType.LanguageBottomSheet}
+                options={bottomSheetStore.message?.data?.options}
+                display={bottomSheetStore.message?.data?.display}
                 onClose={bottomSheetStore.closeMessage}
             />
             {/* ... other bottom sheets */}

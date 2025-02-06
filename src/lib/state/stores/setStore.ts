@@ -79,9 +79,12 @@ export class SetStore extends Observable<SetState> {
         return sets;
     }
 
-    public addCard(card: SetCard) {
+    public addCards(cards: SetCard[] = []) {
         this.notify(() => {
-            this.cards.set(card.name, card);
+            cards.forEach(card => {
+                console.log('aa adding card', card.name, card);
+                this.cards.set(card.name, card);
+            });
         });
     }
 

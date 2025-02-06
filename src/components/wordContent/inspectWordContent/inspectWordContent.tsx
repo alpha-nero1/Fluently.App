@@ -6,9 +6,14 @@ import { useStores } from '~/lib/state/storeProvider';
 import { SetApi } from '~/api/setApi';
 import { Language } from '~/lib/types/enums/Language';
 import { Txt } from '~/components/core/layout/txt/Txt';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
 import { VerticalSpacer } from '~/components/core/layout/verticalSpacer/verticalSpacer';
 import Toast from 'react-native-toast-message';
+import Icon from 'react-native-vector-icons/MaterialIcons'; // Choose any icon set
+import * as Speech from 'expo-speech';
+import { LanguageSpeakMap } from '~/lib/constants/language';
+import styles from './inspectWordContent.styles';
+import { Colours } from '~/lib/themes/colours';
 
 interface IInspectWordContentProps {
     word: WordBase | null;
@@ -21,8 +26,9 @@ const { width } = Dimensions.get("window");
  * Content displayed when a word is clicked on.
  */
 export const InspectWordContent = (props: IInspectWordContentProps) => {
-    const { setStore } = useStores();
+    const { setStore, settingStore } = useStores();
     const [isLoading, setIsLoading] = useState(false);
+    const [isSpeaking, setIsSpeaking] = useState(false);
     const { word } = props;
 
     if (!word) return null;
@@ -45,8 +51,8 @@ export const InspectWordContent = (props: IInspectWordContentProps) => {
         try {
             setIsLoading(true);
             // We have a selected set! let's add the card!.
-            const sc = await SetApi.addToSet(setStore.selectedSetId, [word as SetCard]);
-            setStore.addCard(sc);
+            const setCards = await SetApi.addToSet(setStore.selectedSetId, [word as SetCard]);
+            setStore.addCards(setCards);
             setIsLoading(false);
             props.onClose();
             Toast.show({
@@ -69,13 +75,20 @@ export const InspectWordContent = (props: IInspectWordContentProps) => {
 
     const getName = () => {
         if (word?.definiteArticle) {
-            return `(${word.definiteArticle}) ${word.name}`
+            return `(${word.definiteArticle}) ${word.name}`.trim()
         }
         if (word?.infinitive && word.infinitive !== word.name) {
-            return `${word.name} (${word.infinitive})`
+            return `${word.name} (${word.infinitive})`.trim()
+        }
+        return word?.name?.trim();
+    } 
+
+    const getSpeakableName = () => {
+        if (word?.definiteArticle) {
+            return `${word.definiteArticle} ${word.name}`
         }
         return word?.name;
-    } 
+    }
 
     const getExplanation = () => {
         if (!word?.infinitive) return '';
@@ -83,13 +96,33 @@ export const InspectWordContent = (props: IInspectWordContentProps) => {
     }
 
     const getPronunciation = () => {
-        if (!word?.infinitive) return '';
-        return word.explanation;
+        if (!word?.pronunciation) return '';
+        return word.pronunciation;
     }
+
+    const speakOnPress = () => {
+        setIsSpeaking(true);
+        const langCode = LanguageSpeakMap[settingStore.learningLanguage];
+        Speech.speak(getSpeakableName(), { 
+            language: langCode, onDone: () => {
+                setIsSpeaking(false);
+            } 
+        });
+    }
+
+    const speakColour = isSpeaking
+        ? Colours.Grey
+        : Colours.Dark;
 
     return (
         <View style={styles.container}>
-            <Txt type='h1'>{getName()}</Txt>
+            <View style={styles.header}>
+                <View style={{ width: 40, paddingRight: 8 }} />
+                <Txt type='h1'>{getName()}</Txt>
+                <Pressable onPress={speakOnPress}>
+                    <Icon name="volume-up" size={40} color={speakColour} style={{ paddingLeft: 8 }} />
+                </Pressable>
+            </View>
             <VerticalSpacer spacing={16} />
             <Txt type='subtitle'>Meaning</Txt>
             <Txt type='emphasised'>{word.meaning}</Txt>
@@ -119,7 +152,7 @@ export const InspectWordContent = (props: IInspectWordContentProps) => {
                     <Txt type='emphasised'>{word.versions}</Txt>
                 </>
             )}
-            <VerticalSpacer spacing={16} />
+            <VerticalSpacer spacing={32} />
             {
                 !setStore.cards.has(word.name)
                 ? (
@@ -137,11 +170,3 @@ export const InspectWordContent = (props: IInspectWordContentProps) => {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center'
-    }
-})

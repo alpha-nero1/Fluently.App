@@ -6,11 +6,12 @@ import { BasicContent } from '~/api/types/basicContent';
 import { useApiContext } from '~/lib/hooks/useApiContext'
 import { Language } from '~/lib/types/enums/Language';
 import ContentScreen from './content/content';
+import { Txt } from '~/components/core/layout/txt/Txt';
+import { useStores } from '~/lib/state/storeProvider';
 
 import styles from './library.styles';
-import { Txt } from '~/components/core/layout/txt/Txt';
 
-function LibraryContent({ item, navigation }: { item: BasicContent, navigation: any }) {
+function LibraryContent({ item, navigation }: { item: BasicContent, navigation: any }) {    
     const onPress = () => {
         navigation.push('Content', { content: item })
     }
@@ -24,13 +25,16 @@ function LibraryContent({ item, navigation }: { item: BasicContent, navigation: 
 }
 
 function Library({ navigation }: any) {
+    const { settingStore } = useStores();
+
     const content = useApiContext({
-        id: 'library_content',
-        fetcher: () => ContentApi.list(Language.Italian)
+        id: `library_content-${settingStore.learningLanguage}`,
+        fetcher: () => ContentApi.list(settingStore.learningLanguage)
     });
 
     return (
         <FlatList
+            style={{ paddingTop: 12 }}
             data={content.data?.data} // Data source
             keyExtractor={(item) => item.contentId} // Unique key for each item
             renderItem={(props) => <LibraryContent {...props} navigation={navigation}/>} // Function to render each item

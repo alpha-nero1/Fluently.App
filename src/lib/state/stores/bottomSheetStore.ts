@@ -1,13 +1,14 @@
 import { Observable } from '../observable';
 
 export enum BottomSheetType {
-    WordBottomSheet
+    WordBottomSheet,
+    LanguageBottomSheet
 }
 
 export interface BottomSheetMessage {
     type: BottomSheetType;
     data: any;
-    onClose: () => void;
+    onClose: (selected?: any) => void;
 }
 
 interface BottomSheetStoreState {
@@ -29,8 +30,8 @@ export class BottomSheetStore extends Observable<BottomSheetStoreState> {
         });
     }
 
-    public closeMessage = () => {
-        this.message?.onClose();
+    public closeMessage = (item?: any) => {
+        this.message?.onClose(item);
         this.notify(() => {
             this.getState().message = null;
         });
