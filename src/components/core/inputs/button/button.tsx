@@ -7,10 +7,11 @@ import {
   ViewStyle,
   TextStyle,
 } from "react-native";
+import { useColouredStyles } from "~/lib/hooks/useColours";
 
-import { styles, typeStyles } from './button.styles';
+import { styleFunc, typeStylesFunc, textStylesFunc } from './button.styles';
 
-export type ButtonType = "info" | "special" | "unknown";
+export type ButtonType = 'info' | 'special' | 'unknown' | 'secondary' | 'text-info';
 
 interface IButtonProps {
     id?: string;
@@ -27,7 +28,11 @@ interface IButtonProps {
  *  Standard button component.
  */
 export const Button = (props: IButtonProps) => {
-    const { id, type = "info", children, isLoading, disabled, onPress } = props;
+    const { id, type = 'info', children, isLoading, disabled, onPress } = props;
+    const styles = useColouredStyles(styleFunc);
+    const typeStyles = useColouredStyles(typeStylesFunc);
+    const _textStyles = useColouredStyles(textStylesFunc);
+    
     const buttonStyles: ViewStyle = {
         ...styles.button,
         ...typeStyles[type],
@@ -38,6 +43,7 @@ export const Button = (props: IButtonProps) => {
 
     const textStyles: TextStyle = {
         ...styles.text,
+        ..._textStyles[type],
         ...(disabled || isLoading ? styles.disabledText : {}),
     };
 

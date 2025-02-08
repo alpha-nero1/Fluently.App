@@ -18,6 +18,7 @@ interface IFlexProps {
     alignStretch?: boolean;
     flex?: number;
     flexWrap?: boolean;
+    testBorder?: boolean;
 }
 
 /**
@@ -54,7 +55,8 @@ export const Flex = (props: IFlexProps) => {
                 alignItems: getAlignment(),
                 flex: props.flex,
                 gap: props.gap,
-                flexWrap: props.flexWrap ? 'wrap' : undefined
+                flexWrap: props.flexWrap ? 'wrap' : undefined,
+                borderWidth: props.testBorder ? 1 : 0
             }
         });
 

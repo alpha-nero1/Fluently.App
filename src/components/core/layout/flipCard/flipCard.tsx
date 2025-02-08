@@ -1,9 +1,12 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { View, TouchableOpacity, Animated } from "react-native";
+import { useColouredStyles } from "~/lib/hooks/useColours";
 
-import styles from './flipCard.styles';
+import styleFunc from './flipCard.styles';
 
 interface IFlipCardProps {
+    isFlipped: boolean;
+    onFlip: (flipped: boolean) => {}
     height: number;
     width: number;
     frontContent: React.ReactNode;
@@ -13,18 +16,23 @@ interface IFlipCardProps {
 /**
  * Displays filppable card content.
  */
-export const FlipCard = ({ frontContent, backContent, height, width }: IFlipCardProps) => {
-    const [isFlipped, setIsFlipped] = useState(false);
+export const FlipCard = ({ frontContent, backContent, height, width, isFlipped, onFlip }: IFlipCardProps) => {
     const animatedValue = useRef(new Animated.Value(0)).current;
+    const styles = useColouredStyles(styleFunc);
 
-    const flipCard = () => {
+    useEffect(() => {
+        const toValue = isFlipped ? 180 : 0;
+        const duration = !toValue ? 0 : 300
         Animated.timing(animatedValue, {
-            toValue: isFlipped ? 0 : 180,
-            duration: 300,
+            toValue,
+            duration,
             useNativeDriver: true
         }).start();
-        setIsFlipped(!isFlipped);
-    };
+    }, [isFlipped]);
+
+    const flipOnReport = () => {
+        onFlip(!isFlipped);
+    }
 
     const frontInterpolate = animatedValue.interpolate({
         inputRange: [0, 180],
@@ -36,12 +44,21 @@ export const FlipCard = ({ frontContent, backContent, height, width }: IFlipCard
         outputRange: ["180deg", "360deg"],
     });
 
+    const getBackCardStyles = () => {
+        return [
+            styles.card, 
+            styles.backCard,
+            { transform: [{ rotateY: backInterpolate }] },
+            isFlipped ? { opacity: 1 } : { opacity: 0 }
+        ];
+    }
+
     return (
-        <TouchableOpacity onPress={flipCard} activeOpacity={1} style={[styles.cardContainer, { height, width }]}>
+        <TouchableOpacity onPress={flipOnReport} activeOpacity={1} style={[styles.cardContainer, { height, width }]}>
             <Animated.View style={[styles.card, { transform: [{ rotateY: frontInterpolate }] }]}>
                 <View style={styles.cardFace}>{frontContent}</View>
             </Animated.View>
-            <Animated.View style={[styles.card, styles.backCard, { transform: [{ rotateY: backInterpolate }] }]}>
+            <Animated.View style={getBackCardStyles()}>
                 <View style={styles.cardFace}>{backContent}</View>
             </Animated.View>
         </TouchableOpacity>

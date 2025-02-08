@@ -7,25 +7,37 @@ import { fluentlyInDifferentLanguages } from '~/lib/constants/language';
 import { TextField } from '~/components/core/inputs/textField/textField';
 import { VerticalSpacer } from '~/components/core/layout/verticalSpacer/verticalSpacer';
 import { PageView } from '~/components/core/layout/pageView/pageView';
+import { router } from 'expo-router';
+import { useColouredStyles } from '~/lib/hooks/useColours';
+import { useI18 } from '~/lib/hooks/useI18';
 
-import styles from './loginScreen.styles';
+import stylesFunc from './loginScreen.styles';
 
-export function LoginScreen({ navigation }: any) {
+export default function LoginScreen() {
+    const styles = useColouredStyles(stylesFunc);
+    const i18 = useI18();
+
     const loginOnPress = () => {
-        navigation.replace('MainApp');
+        router.replace('/main/explore');
+    }
+
+    const signupOnPress = () => {
+        router.push('/auth/register/registerScreen');
     }
 
     return (
-        <PageView style={styles.page} disableDefaultPadding>
+        <PageView style={styles.page} disableDefaultPadding applyOffsetBottomPadding>
             <KeyboardAvoidingView>
                 <View style={styles.widget}>
-                    <Txt type='h1' italic>Fluently</Txt>
+                    <Txt type='h1' italic>{i18.Fluently}</Txt>
                     <VerticalSpacer spacing={16} />
-                    <TextField placeholder='Username' autoCapitalize={'none'} />
+                    <TextField placeholder={i18.Username} autoCapitalize={'none'} />
                     <VerticalSpacer spacing={16} />
-                    <TextField placeholder='Password' autoCapitalize={'none'} secureTextEntry />
+                    <TextField placeholder={i18.Password} autoCapitalize={'none'} secureTextEntry />
                     <VerticalSpacer spacing={32} />
-                    <Button onPress={loginOnPress}>Login</Button>
+                    <Button onPress={loginOnPress}>{i18.Login}</Button>
+                    <VerticalSpacer spacing={16} />
+                    <Button onPress={signupOnPress} type='text-info'>{i18.Sign_up}</Button>
                 </View>
             </KeyboardAvoidingView>
             <FloatingTextView words={fluentlyInDifferentLanguages} />

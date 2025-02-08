@@ -1,10 +1,11 @@
-import { View, Text, Dimensions } from "react-native";
+import { View, Text, Dimensions, TouchableWithoutFeedback } from "react-native";
 import { VerticalSpacer } from "~/components/core/layout/verticalSpacer/verticalSpacer";
 import { Word } from "~/api/types/word";
 import { useEffect, useState, useRef } from "react";
 import { useStores } from "~/lib/state/storeProvider";
+import { useColouredStyles } from "~/lib/hooks/useColours";
 
-import styles from './contentReaderPage.styles';
+import styleFunc from './contentReaderPage.styles';
 
 interface Props {
     spans: string[][];
@@ -26,6 +27,7 @@ export function ContentReaderPage(props: Props) {
     const [spansLoading, setSpansLoading] = useState<Set<string>>(new Set<string>())
     const { setStore } = useStores();
     const timeout = useRef<NodeJS.Timeout>(null);
+    const styles = useColouredStyles(styleFunc);
 
     const alternateSpansLoading = () => {
         if (!isLoading) {
@@ -94,31 +96,33 @@ export function ContentReaderPage(props: Props) {
     }
 
     return (
-        <View style={{ ...styles.page, width: viewWidth }}>
-            <View>
-                {spans.map((lineSpan: string[], i: number) => {
-                    if (!lineSpan.length) {
-                        return <VerticalSpacer key={`line-${i}`} spacing={16} />
-                    }
-                    return (
-                        <View key={`${lineSpan.join('-')}-${i}`} style={styles.line}>
-                            {lineSpan.map((span, j) => {
-                                const spanKey = `${span}|${i}|${j}`;
-                                return (
-                                    <Text
-                                        key={spanKey} 
-                                        style={getSpanStyle(span, spanKey)} 
-                                        onPress={() => spanOnSelected(spanKey)}
-                                    >
-                                        {span}
-                                    </Text>
-                                );
-                            })}
-                        </View>
-                    )
-                })}
+        <TouchableWithoutFeedback>
+            <View style={{ ...styles.page, width: viewWidth }}>
+                <View>
+                    {spans.map((lineSpan: string[], i: number) => {
+                        if (!lineSpan.length) {
+                            return <VerticalSpacer key={`line-${i}`} spacing={16} />
+                        }
+                        return (
+                            <View key={`${lineSpan.join('-')}-${i}`} style={styles.line}>
+                                {lineSpan.map((span, j) => {
+                                    const spanKey = `${span}|${i}|${j}`;
+                                    return (
+                                        <Text
+                                            key={spanKey} 
+                                            style={getSpanStyle(span, spanKey)} 
+                                            onPress={() => spanOnSelected(spanKey)}
+                                        >
+                                            {span}
+                                        </Text>
+                                    );
+                                })}
+                            </View>
+                        )
+                    })}
+                </View>
             </View>
-        </View>
+        </TouchableWithoutFeedback>
     );
 }
 

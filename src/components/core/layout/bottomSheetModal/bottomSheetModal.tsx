@@ -3,7 +3,8 @@ import { View, TouchableWithoutFeedback } from 'react-native';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import styles from './bottomSheetModal.styles';
+import styleFunc from './bottomSheetModal.styles';
+import { useColouredStyles } from '~/lib/hooks/useColours';
 
 export interface IBottomSheetModalProps {
   isOpen?: boolean;
@@ -18,6 +19,7 @@ export interface IBottomSheetModalProps {
  */
 export const BottomSheetModal = ({ children, onClose, isOpen }: IBottomSheetModalProps) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const styles = useColouredStyles(styleFunc);
 
   // Callback when the bottom sheet is expanded or collapsed
   const handleSheetChanges = useCallback((index: number) => {
@@ -43,6 +45,9 @@ export const BottomSheetModal = ({ children, onClose, isOpen }: IBottomSheetModa
             enableDynamicSizing
             enablePanDownToClose
             style={styles.bottomSheet}
+            backgroundStyle={styles.sheetBackground}
+            handleStyle={styles.handle}
+            handleIndicatorStyle={styles.indicator}
           >
             <BottomSheetView style={styles.sheetView}>
               <TouchableWithoutFeedback>

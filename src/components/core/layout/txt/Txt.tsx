@@ -1,6 +1,6 @@
 import { Text } from 'react-native';
 import { useMemo } from 'react';
-import { Colours } from '~/lib/themes/colours';
+import { useColours } from '~/lib/hooks/useColours';
 
 export type TextType = 
     'h1' 
@@ -16,6 +16,7 @@ interface ITxtProps {
     bold?: boolean;
     italic?: boolean;
     disableStandardSpacing?: boolean;
+    style?: any;
 }
 
 const standardSpacing = 6;
@@ -25,15 +26,15 @@ const standardSpacing = 6;
  */
 export function Txt(props: ITxtProps) {
     const { type, children, bold, italic } = props;
+    const colours = useColours();
 
     const style = useMemo(() => {
         const stl: any = {
             marginBottom: props.disableStandardSpacing ? 0 : standardSpacing,
             fontWeight: bold ? 'bold' : '',
             fontSize: 16,
-            color: Colours.Dark,
-            fontFamily: 'Athelas-Regular',
-            wordWrap: 'break-word'
+            color: colours.Text,
+            fontFamily: 'Athelas-Regular'
         }
 
         if (italic) stl.fontStyle = 'italic';
@@ -49,15 +50,22 @@ export function Txt(props: ITxtProps) {
     
         if (type === 'subtitle') {
             stl.fontSize = 18;
-            stl.color = Colours.Grey;
+            stl.color = colours.Grey;
         }
     
         if (type === 'emphasised') {
             stl.fontSize = 18;
         }
 
+        if (props.style) {
+            return {
+                ...stl,
+                ...props.style
+            };
+        }
+
         return stl;
     }, [type]);
 
-    return <Text style={style}>{children}</Text>;
+    return <Text style={style} numberOfLines={2}>{children}</Text>;
 }

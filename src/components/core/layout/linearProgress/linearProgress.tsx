@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, View, StyleSheet, Dimensions } from 'react-native';
-import { Colours } from '~/lib/themes/colours';
+import { useColours } from '~/lib/hooks/useColours';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -17,12 +17,14 @@ export const LinearProgress = ({
     progress,
     height = 6,
     width = screenWidth,
-    color = Colours.BlueLight,
-    backgroundColor = Colours.GreyLight,
+    color,
+    backgroundColor,
     animationDuration = 300,
     }: LinearProgressProps) => {
-
     const animatedWidth = useRef(new Animated.Value(0)).current;
+    const colours = useColours();
+    if (!color) color = colours.Blue;
+    if (!backgroundColor) backgroundColor = colours.GreyLight;
 
     useEffect(() => {
         Animated.timing(animatedWidth, {

@@ -48,7 +48,7 @@ export const FloatingTextView = ({ words }: IFloatingTextViewProps) => {
                   text={word}
                   delay={index * 700} // Different start times
                   speed={8000 + Math.random() * 5000} // Different speeds
-                  startY={(index * 40) % height} // Different Y positions
+                  startY={((index * 40) % height) + 40} // Different Y positions
                 />
             ))}
         </View>

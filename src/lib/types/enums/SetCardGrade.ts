@@ -5,5 +5,6 @@ export enum SetCardGrade {
     C = 'C',
     D = 'D',
     E = 'E',
-    F = 'F'
+    F = 'F',
+    New = 'New'
 }

@@ -1,10 +1,10 @@
 import { StyleSheet } from "react-native"
-import { Colours } from "~/lib/themes/colours";
+import { IColours } from "~/lib/themes/colours";
 
-export default StyleSheet.create({
+export default (colours: IColours) => StyleSheet.create({
     field: {
         borderWidth: 1,
-        borderColor: Colours.GreyLight,
+        borderColor: colours.GreyLight,
         padding: 8,
         borderRadius: 8,
         marginBottom: 8,

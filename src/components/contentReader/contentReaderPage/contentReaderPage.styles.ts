@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
-import { Colours } from '~/lib/themes/colours';
+import { IColours } from '~/lib/themes/colours';
 
-export default StyleSheet.create({
+export default (colours: IColours) => StyleSheet.create({
     page: {
         display: 'flex',
         flexDirection: 'row',
@@ -16,7 +16,7 @@ export default StyleSheet.create({
         paddingLeft: 2,
         paddingRight: 2,
         borderRadius: 4,
-        color: Colours.Dark,
+        color: colours.Text,
         fontSize: 26,
         fontFamily: 'Athelas-Regular'
     },
@@ -26,7 +26,7 @@ export default StyleSheet.create({
     },
     spansegmentSaved: {
         borderBottomWidth: 2,
-        borderBottomColor: Colours.Green
+        borderBottomColor: colours.Green
     },
     spansegmentLoading: {
         backgroundColor: '#DDD'

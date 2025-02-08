@@ -1,8 +1,8 @@
 import React from 'react'
 import { FlatList, TouchableOpacity, StyleSheet, View } from 'react-native';
 import { BottomSheetModal } from '~/components/core/layout/bottomSheetModal/bottomSheetModal'
-import { Txt } from '~/components/core/layout/txt/Txt';
-import { Colours } from '~/lib/themes/colours';
+import { useColouredStyles } from '~/lib/hooks/useColours';
+import { IColours } from '~/lib/themes/colours';
 
 interface IDropDownBottomSheetProps {
     isOpen?: boolean;
@@ -12,6 +12,8 @@ interface IDropDownBottomSheetProps {
 }
 
 export const DropDownBottomSheet = ({ isOpen, options, display, onClose }: IDropDownBottomSheetProps) => {
+    const styles = useColouredStyles(styleFunc);
+    
     return (
         <BottomSheetModal
             isOpen={isOpen}
@@ -33,12 +35,12 @@ export const DropDownBottomSheet = ({ isOpen, options, display, onClose }: IDrop
     )
 }
 
-const styles = StyleSheet.create({
+const styleFunc = (colours: IColours) => StyleSheet.create({
     item: {
         width: '100%',
         flex: 1,
         display: 'flex',
         borderBottomWidth: 1,
-        borderBottomColor: Colours.GreyLight
+        borderBottomColor: colours.GreyLight
     }
 })

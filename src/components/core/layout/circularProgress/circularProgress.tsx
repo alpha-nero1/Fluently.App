@@ -1,7 +1,8 @@
 import React, { useRef, useEffect } from 'react';
-import { Constants } from '~/lib/constants';
 import Svg, { Circle, Text } from 'react-native-svg';
 import { Animated } from 'react-native';
+import { IColours } from '~/lib/themes/colours';
+import { useColours } from '~/lib/hooks/useColours';
 
 export type ProgressSize = 'largest' | 'large' | 'medium' | 'small' | 'smallest';
 export type ProgressStatus = 'success' | 'warning' | 'error' | 'info' | 'special' | 'unknown';
@@ -12,23 +13,23 @@ interface ICircularProgressProps {
     status?: ProgressStatus;
 }
 
-export const statusColourRegister = {
-    success: Constants.Colours.Success,
-    warning: Constants.Colours.Warning,
-    error: Constants.Colours.Error,
-    info: Constants.Colours.Info,
-    special: Constants.Colours.Special,
-    unknown: Constants.Colours.Unknown,
-};
+export const statusColourRegisterFunc = (colours: IColours) => ({
+    success: colours.Green,
+    warning: colours.Orange,
+    error: colours.Red,
+    info: colours.Blue,
+    special: colours.Purple,
+    unknown: colours.Grey,
+});
 
-export const statusLightColourRegister = {
-    success: Constants.Colours.SuccessLight,
-    warning: Constants.Colours.WarningLight,
-    error: Constants.Colours.ErrorLight,
-    info: Constants.Colours.InfoLight,
-    special: Constants.Colours.SpecialLight,
-    unknown: Constants.Colours.UnknownLight,
-};
+export const statusLightColourRegisterFunc = (colours: IColours) => ({
+    success: colours.GreyLight,
+    warning: colours.GreyLight,
+    error: colours.GreyLight,
+    info: colours.GreyLight,
+    special: colours.GreyLight,
+    unknown: colours.GreyLight,
+});
 
 const sizeRegister = {
     largest: 200,
@@ -50,6 +51,7 @@ const fontSizeRegister = {
  * A component for displaying a circular progress.
  */
 export const CircularProgress = (props: ICircularProgressProps) => {
+    const colours = useColours();
     const size = props.size || 'medium';
     const realSize = sizeRegister[size];
     const strokeWidth = realSize / 10;
@@ -59,6 +61,8 @@ export const CircularProgress = (props: ICircularProgressProps) => {
     const radius = (realSize - strokeWidth) / 2;
     const circumference = 2 * Math.PI * radius;
     const offset = circumference - (progress / 100) * circumference;
+    const statusColourRegister = statusColourRegisterFunc(colours);
+    const statusLightColourRegister = statusLightColourRegisterFunc(colours);
 
     const colour = statusColourRegister[status];
     const colourLight = statusLightColourRegister[status];

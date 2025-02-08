@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
+import { IColours } from "~/lib/themes/colours";
 
-export const styles = StyleSheet.create({
+export const styleFunc = (colours: IColours) => StyleSheet.create({
     button: {
         borderRadius: 8,
         paddingVertical: 10,
@@ -19,22 +20,46 @@ export const styles = StyleSheet.create({
         padding: 6
     },
     disabledButton: {
-        backgroundColor: "gray",
+        backgroundColor: colours.Grey,
     },
     disabledText: {
-        color: "#ddd",
+        color: colours.Background
     }
 });
   
 // Type Styles (matching your CSS)
-export const typeStyles = StyleSheet.create({
+export const typeStylesFunc = (colours: IColours) => StyleSheet.create({
     info: {
-        backgroundColor: "rgb(31, 71, 233)",
+        backgroundColor: colours.Blue,
+    },
+    secondary: {
+        backgroundColor: colours.BlueLight,
     },
     special: {
-        backgroundColor: "#5408ed",
+        backgroundColor: colours.Purple,
     },
     unknown: {
-        backgroundColor: "#999",
+        backgroundColor: colours.Grey,
+    },
+    'text-info': {
+        backgroundColor: 'transparent',
+    }
+});
+
+export const textStylesFunc = (colours: IColours) => StyleSheet.create({
+    info: {
+        color: colours.White,
+    },
+    secondary: {
+        color: colours.White,
+    },
+    special: {
+        color: colours.White,
+    },
+    unknown: {
+        color: colours.White,
+    },
+    'text-info': {
+        color: colours.Blue
     }
 });

@@ -7,8 +7,10 @@ import {
 import { useStores } from "~/lib/state/storeProvider";
 import { BottomSheetType } from "~/lib/state/stores/bottomSheetStore";
 import { Txt } from "../../layout/txt/Txt";
+import { useColouredStyles } from "~/lib/hooks/useColours";
+import { useI18 } from "~/lib/hooks/useI18";
 
-import styles from './dropdown.styles';
+import styleFunc from './dropdown.styles';
 
 interface IDropdownProps<TOption> {
     label?: string;
@@ -23,6 +25,8 @@ interface IDropdownProps<TOption> {
 export function Dropdown<TOption>(props: IDropdownProps<TOption>) {
     const { options, placeholder, onSelect, display, width, selected, label } = props;
     const { bottomSheetStore } = useStores();
+    const styles = useColouredStyles(styleFunc);
+    const i18 = useI18();
 
     const openOnPress = () => {
         bottomSheetStore.setMessage({
@@ -48,7 +52,7 @@ export function Dropdown<TOption>(props: IDropdownProps<TOption>) {
                     ? display(selected) 
                     : (
                         <View style={styles.placeholderView}>
-                            <Txt type='subtitle' disableStandardSpacing>{placeholder || 'Select an option'}</Txt>
+                            <Txt type='subtitle' disableStandardSpacing>{placeholder || i18.Select_an_option}</Txt>
                         </View>
                     )
                 }

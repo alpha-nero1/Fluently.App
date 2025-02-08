@@ -1,11 +1,16 @@
 import { StyleSheet } from 'react-native';
+import { IColours } from '~/lib/themes/colours';
 
-export default StyleSheet.create({
+export const stylesFunc = (colours: IColours) => StyleSheet.create({
     item: {
-      backgroundColor: 'lightgrey',
-      padding: 20,
-      marginVertical: 8,
-      marginHorizontal: 16,
-      borderRadius: 10,
+      backgroundColor: colours.Background,
+      padding: 8,
+      width: '49%',
+      margin: 4,
+      borderRadius: 8,
+      height: 300
+    },
+    header: {
+      paddingLeft: 16
     }
 });

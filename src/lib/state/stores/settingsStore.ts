@@ -1,6 +1,8 @@
 import { Language } from "~/lib/types/enums/Language";
 import { Observable } from "../observable";
 import { UiThemeType } from "~/lib/themes/themes";
+import * as Localization from 'expo-localization';
+import { languageCodeToLanguage } from "~/lib/hooks/useI18";
 
 export interface SettingState {
   learningLanguage: Language;
@@ -8,11 +10,19 @@ export interface SettingState {
   theme: UiThemeType;
 }
 
+const languageCode = Localization.getLocales()[0].languageCode || 'en';
+const defaultLearnerLanguage = languageCodeToLanguage[languageCode];
+const defaultLearningLanguage = (
+    defaultLearnerLanguage === Language.English
+    ? Language.Italian
+    : Language.English
+)
+
 export class SettingStore extends Observable<SettingState> {
     constructor() {
         super({ 
-            learnerLanguage: Language.English, 
-            learningLanguage: Language.Italian, 
+            learnerLanguage: defaultLearnerLanguage, 
+            learningLanguage: defaultLearningLanguage, 
             theme: 'Light'
         });
     }

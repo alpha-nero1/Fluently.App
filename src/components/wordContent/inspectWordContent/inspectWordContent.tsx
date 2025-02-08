@@ -6,14 +6,12 @@ import { useStores } from '~/lib/state/storeProvider';
 import { SetApi } from '~/api/setApi';
 import { Language } from '~/lib/types/enums/Language';
 import { Txt } from '~/components/core/layout/txt/Txt';
-import { Dimensions, Pressable, StyleSheet, View } from 'react-native';
+import { Dimensions, View } from 'react-native';
 import { VerticalSpacer } from '~/components/core/layout/verticalSpacer/verticalSpacer';
 import Toast from 'react-native-toast-message';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // Choose any icon set
-import * as Speech from 'expo-speech';
-import { LanguageSpeakMap } from '~/lib/constants/language';
 import styles from './inspectWordContent.styles';
-import { Colours } from '~/lib/themes/colours';
+import { SpeakIcon } from '../speakIcon/speakIcon';
+import { useI18 } from '~/lib/hooks/useI18';
 
 interface IInspectWordContentProps {
     word: WordBase | null;
@@ -28,7 +26,7 @@ const { width } = Dimensions.get("window");
 export const InspectWordContent = (props: IInspectWordContentProps) => {
     const { setStore, settingStore } = useStores();
     const [isLoading, setIsLoading] = useState(false);
-    const [isSpeaking, setIsSpeaking] = useState(false);
+    const i18 = useI18();
     const { word } = props;
 
     if (!word) return null;
@@ -100,55 +98,39 @@ export const InspectWordContent = (props: IInspectWordContentProps) => {
         return word.pronunciation;
     }
 
-    const speakOnPress = () => {
-        setIsSpeaking(true);
-        const langCode = LanguageSpeakMap[settingStore.learningLanguage];
-        Speech.speak(getSpeakableName(), { 
-            language: langCode, onDone: () => {
-                setIsSpeaking(false);
-            } 
-        });
-    }
-
-    const speakColour = isSpeaking
-        ? Colours.Grey
-        : Colours.Dark;
-
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <View style={{ width: 40, paddingRight: 8 }} />
+                <View style={{ width: 40, paddingRight: 8, flexShrink: 0 }} />
                 <Txt type='h1'>{getName()}</Txt>
-                <Pressable onPress={speakOnPress}>
-                    <Icon name="volume-up" size={40} color={speakColour} style={{ paddingLeft: 8 }} />
-                </Pressable>
+                <SpeakIcon text={getSpeakableName()} language={settingStore.learningLanguage} />
             </View>
             <VerticalSpacer spacing={16} />
-            <Txt type='subtitle'>Meaning</Txt>
+            <Txt type='subtitle'>{i18.Meaning}</Txt>
             <Txt type='emphasised'>{word.meaning}</Txt>
-            <Txt type='subtitle'>Explanation</Txt>
+            <Txt type='subtitle'>{i18.Explanation}</Txt>
             <Txt type='emphasised'>{getExplanation()}</Txt>
             {word.pronunciation && (
                 <>
-                    <Txt type='subtitle'>Pronunciation</Txt>
+                    <Txt type='subtitle'>{i18.Pronunciation}</Txt>
                     <Txt type='emphasised'>{getPronunciation()}</Txt>
                 </>
             )}
             {word.example && (
                 <>
-                    <Txt type='subtitle'>Example</Txt>
+                <Txt type='subtitle'>{i18.Example}</Txt>
                     <Txt type='emphasised'>{word.example}</Txt>
                 </>
             )}
             {word.infinitive && (
                 <>
-                    <Txt type='subtitle'>Infinitive</Txt>
+                    <Txt type='subtitle'>{i18.Infinitive}</Txt>
                     <Txt type='emphasised'>{word.infinitive}</Txt>
                 </>
             )}
             {word.versions && (
                 <>
-                    <Txt type='subtitle'>Versions</Txt>
+                    <Txt type='subtitle'>{i18.Versions}</Txt>
                     <Txt type='emphasised'>{word.versions}</Txt>
                 </>
             )}
@@ -162,7 +144,7 @@ export const InspectWordContent = (props: IInspectWordContentProps) => {
                         height={50}
                         isLoading={isLoading}
                     >   
-                        Add to set
+                        {i18.Add_to_set}
                     </Button>
                 ) : null
             }

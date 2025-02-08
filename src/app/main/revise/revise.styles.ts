@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
-import { Colours } from '~/lib/themes/colours';
+import { IColours } from '~/lib/themes/colours';
 
-export default StyleSheet.create({
+export const styleFunc = (_: IColours) => StyleSheet.create({
     header: {
         display: 'flex',
         flexDirection: 'row',
@@ -20,19 +20,12 @@ export default StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center'
     },
-    setCards: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between'
-    },
     setCardOutline: {
-        borderColor: Colours.GreyLight,
-        borderWidth: 1,
         borderRadius: 8, // Equivalent to 0.4rem
         padding: 8, // Equivalent to 1rem
         flexDirection: 'row',
         width: '49%',
-        marginBottom: 8
+        height: 60
     },
     setCardOutlineLeft: {
         flex: 1

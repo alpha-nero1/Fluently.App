@@ -12,7 +12,6 @@ export enum Language {
     Arabic = 'Arabic',
     Farsi = 'Farsi',
     Dutch = 'Dutch',
-    Danish = 'Danish',
     Cantonese = 'Cantonese',
     ChineseSimplified = 'ChineseSimplified'
 }

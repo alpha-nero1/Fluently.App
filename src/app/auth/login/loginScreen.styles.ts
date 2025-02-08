@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
-import { Colours } from '~/lib/themes/colours';
+import { IColours } from '~/lib/themes/colours';
 
-export default StyleSheet.create({
+export default (colours: IColours) => StyleSheet.create({
     page: {
         height: '100%',
         display: 'flex',
@@ -15,6 +15,6 @@ export default StyleSheet.create({
         padding: 32,
         borderRadius: 8,
         zIndex: 100,
-        backgroundColor: Colours.Light
+        backgroundColor: colours.Background
     }
 });

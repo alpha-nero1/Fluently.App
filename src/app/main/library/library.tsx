@@ -1,31 +1,46 @@
-import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react'
-import { Text, FlatList, RefreshControl, Pressable } from 'react-native'
+import { FlatList, RefreshControl, Pressable, View } from 'react-native'
 import { ContentApi } from '~/api/contentApi';
 import { BasicContent } from '~/api/types/basicContent';
 import { useApiContext } from '~/lib/hooks/useApiContext'
-import { Language } from '~/lib/types/enums/Language';
-import ContentScreen from './content/content';
 import { Txt } from '~/components/core/layout/txt/Txt';
 import { useStores } from '~/lib/state/storeProvider';
+import { useRouter } from 'expo-router';
+import { PageView } from '~/components/core/layout/pageView/pageView';
+import { Flex } from '~/components/core/layout/flex/flex';
+import { useColouredStyles, useColours } from '~/lib/hooks/useColours';
+import { useI18 } from '~/lib/hooks/useI18';
 
-import styles from './library.styles';
+import { stylesFunc } from './library.styles';
 
-function LibraryContent({ item, navigation }: { item: BasicContent, navigation: any }) {    
+function LibraryContent({ item: content }: { item: BasicContent }) {
+    const router = useRouter();
+    const styles = useColouredStyles(stylesFunc)
+    const colours = useColours();
+
     const onPress = () => {
-        navigation.push('Content', { content: item })
+        router.push({
+            pathname: '/main/library/content/content',
+            params: { contentId: content.contentId }
+        });
     }
     
     return (
         <Pressable style={styles.item} onPress={onPress}>
-            <Txt type='title'>{item.title}</Txt>
-            <Txt type='emphasised'>{item.author}</Txt>
+            <Flex flex={1} column alignStart justifyEnd>
+                <View style={{ backgroundColor: colours.PurpleLight, width: 160, height: 200, borderRadius: 8, margin: 4 }}></View>
+                <Txt type='emphasised'>{content.title}</Txt>
+                <Txt type='subtitle'>{content.author}</Txt>
+            </Flex>
         </Pressable>
     );
 }
 
-function Library({ navigation }: any) {
+export default function Library() {
     const { settingStore } = useStores();
+    const colours = useColours();
+    const styles = useColouredStyles(stylesFunc)
+    const i18 = useI18();
 
     const content = useApiContext({
         id: `library_content-${settingStore.learningLanguage}`,
@@ -33,32 +48,28 @@ function Library({ navigation }: any) {
     });
 
     return (
-        <FlatList
-            style={{ paddingTop: 12 }}
-            data={content.data?.data} // Data source
-            keyExtractor={(item) => item.contentId} // Unique key for each item
-            renderItem={(props) => <LibraryContent {...props} navigation={navigation}/>} // Function to render each item
-            refreshControl={
-                <RefreshControl
-                  refreshing={content.isLoading} // Indicates if the list is refreshing
-                  onRefresh={content.refresh} // Function to call on pull-to-refresh
-                  colors={['#ff6347']} // Android refresh spinner color
-                  tintColor="#ff6347" // iOS refresh spinner color
-                  title="Loading..." // iOS refresh spinner title
-                  titleColor="#ff6347" // iOS spinner title color
-                />
-              }
-        />
+        <PageView disableDefaultPadding>
+            <View style={styles.header}>
+                <Txt type='h1'>{i18.Library}</Txt>
+            </View>
+            <FlatList
+                style={{ paddingTop: 12 }}
+                numColumns={2}
+                data={content.data?.data} 
+                keyExtractor={(item) => item.contentId} 
+                renderItem={(props) => <LibraryContent {...props} />}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={content.isLoading} 
+                        onRefresh={content.refresh} 
+                        colors={[colours.Blue]} 
+                        tintColor={colours.Blue} 
+                        title={`${i18.Loading}...`}
+                        titleColor={colours.Blue}
+                    />
+                }
+            />
+        </PageView>
     )
 }
 
-const Stack = createStackNavigator();
-
-export function LibraryScreen() {
-    return (
-        <Stack.Navigator>
-            <Stack.Screen name="Library" component={Library} options={{ headerShown: false }} />
-            <Stack.Screen name="Content" component={ContentScreen} options={{ headerShown: false }} />
-        </Stack.Navigator>
-    );
-}

@@ -1,22 +1,22 @@
 import React, { useState } from 'react'
-import { View } from 'react-native'
-import { BasicContent } from '~/api/types/basicContent'
 import { useApiContext } from '~/lib/hooks/useApiContext';
 import { ContentApi } from '~/api/contentApi';
 import { ContentReader } from '~/components/contentReader/contentReader';
 import { Loader } from '~/components/core/layout/loader/loader';
 import { useStores } from '~/lib/state/storeProvider';
+import { useLocalSearchParams } from 'expo-router';
+import { PageView } from '~/components/core/layout/pageView/pageView';
+import { Flex } from '~/components/core/layout/flex/flex';
 
-import styles from './content.styles';
-
-export default function ContentScreen({ route }: any) {
-    const basicContent = route.params.content as BasicContent;
+export default () => {
+    const params = useLocalSearchParams();
+    const contentId = params.contentId as string;
     const [spans, setSpans] = useState<string[][]>([]);
     const { dictionaryStore } = useStores();
 
     const content = useApiContext({
-        id: `library_content_${basicContent.contentId}`,
-        fetcher: () => ContentApi.get(basicContent.contentId, 0, 100),
+        id: `content_${contentId}`,
+        fetcher: () => ContentApi.get(contentId, 0, 100),
         dataInterceptor: (content) => {
             const allSpans: string[][] = [];
             (content?.data || []).forEach(({ data: contentData }) => {
@@ -38,21 +38,23 @@ export default function ContentScreen({ route }: any) {
     });
 
     return (
-        <View style={styles.page}>
-            {
-                content.isLoading 
-                ? <Loader />
-                : null
-            }
-            {
-                spans.length 
-                && content.data
-                ? <ContentReader 
-                    language={basicContent.language}
-                    spans={spans} 
-                />
-                : null
-            }
-        </View>
+        <PageView disableDefaultPadding>
+            <Flex column justifyCenter alignCenter>
+                {
+                    content.isLoading 
+                    ? <Loader />
+                    : null
+                }
+                {
+                    spans.length 
+                    && content.data
+                    ? <ContentReader 
+                        language={content.data.language}
+                        spans={spans} 
+                    />
+                    : null
+                }
+            </Flex>
+        </PageView>
     )
 }

@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
+import { IColours } from '~/lib/themes/colours';
 
-export default StyleSheet.create({
+export default (colours: IColours) => StyleSheet.create({
     cardContainer: {
         perspective: '1000', // 3D effect
         alignItems: "center",
@@ -9,18 +10,20 @@ export default StyleSheet.create({
     card: {
         position: "absolute",
         backfaceVisibility: "hidden", // Hides the back when flipping
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#ccc",
+        top: 20,
+        bottom: 140,
+        left: 16,
+        right: 16
     },
     cardFace: {
         flex: 1,
+        borderRadius: 10,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#fff",
+        backgroundColor: colours.Background,
     },
     backCard: {
         transform: [{ rotateY: "180deg" }],
-        backgroundColor: "#eee",
+        backgroundColor: colours.Background,
     }
 });

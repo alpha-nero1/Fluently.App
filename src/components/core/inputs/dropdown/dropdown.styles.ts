@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
+import { IColours } from '~/lib/themes/colours';
 
-export default StyleSheet.create({
+export default (colours: IColours) => StyleSheet.create({
     modalOverlay: {
         flex: 1,
         justifyContent: "center",
@@ -11,9 +12,9 @@ export default StyleSheet.create({
         position: "relative",
     },
     dropdownToggle: {
-        backgroundColor: "#f5f5f5",
+        backgroundColor: colours.Background,
         borderWidth: 1,
-        borderColor: "#ccc",
+        borderColor: colours.Grey,
         borderRadius: 5,
         height: 50
     },
