@@ -10,10 +10,15 @@ export const TextField = (props: TextInputProps) => {
     const styles = useColouredStyles(styleFunc);
     const colours = useColours();
 
+    const style = {
+        ...styles.field,
+        ...(props.style || {} as any)
+    }
+
     return (
         <TextInput
             {...props}
-            style={styles.field}
+            style={style}
             placeholderTextColor={colours.GreyLight}
         />
     );

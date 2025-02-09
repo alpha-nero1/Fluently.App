@@ -9,6 +9,7 @@ export default (colours: IColours) => StyleSheet.create({
         borderRadius: 8,
         marginBottom: 8,
         fontFamily: 'Athelas-Regular',
-        fontSize: 20
+        fontSize: 20,
+        color: colours.Text
     }
 });

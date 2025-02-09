@@ -29,12 +29,15 @@ export function Txt(props: ITxtProps) {
     const colours = useColours();
 
     const style = useMemo(() => {
+        let fontFamily = 'Athelas-Regular';
+        if (props.italic) fontFamily = 'Athelas-Italic'
+        if (props.bold) fontFamily = 'Athelas-Bold'
         const stl: any = {
             marginBottom: props.disableStandardSpacing ? 0 : standardSpacing,
             fontWeight: bold ? 'bold' : '',
             fontSize: 16,
             color: colours.Text,
-            fontFamily: 'Athelas-Regular'
+            fontFamily
         }
 
         if (italic) stl.fontStyle = 'italic';

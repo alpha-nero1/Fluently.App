@@ -64,6 +64,10 @@ export const languageCodeToLanguage: { [key in string]: Language } = {
 export const useI18 = (): ITranslations => {
     const { settingStore } = useStores();
     const learnerLanguage = settingStore.learnerLanguage;
+    const defaultFile = en;
     const file = languageToTranslationMap[learnerLanguage];
-    return file;
+    return {
+        ...defaultFile,
+        ...file
+    }
 }

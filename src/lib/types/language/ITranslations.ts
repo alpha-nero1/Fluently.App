@@ -28,4 +28,23 @@ export interface ITranslations {
     Okay: string;
     Easy: string;
     Sign_up: string;
+    Sign_up_exc: string;
+    Feedback_Suggestions: string;
+    Let_us_know_your_thoughts: string;
+    Submit: string;
+    Subscription: string;
+    Manage_subscription: string;
+    Thanks_for_your_valuable_feedback: string;
+    Send_another: string;
+    Next: string;
+    You_speak: string;
+    You_are_learning: string;
+    Back: string;
+    Enter_your_password: string;
+    Enter_your_email: string;
+    OR: string;
+    Phone_number: string;
+    Email: string;
+    Sign_up_successful: string;
+    Happy_learning_exc: string;
 }

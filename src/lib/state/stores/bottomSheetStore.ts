@@ -2,7 +2,9 @@ import { Observable } from '../observable';
 
 export enum BottomSheetType {
     WordBottomSheet,
-    LanguageBottomSheet
+    LanguageBottomSheet,
+    ManageSubscription,
+    Subscribe
 }
 
 export interface BottomSheetMessage {

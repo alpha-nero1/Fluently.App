@@ -29,7 +29,7 @@ export default function LoginScreen() {
         <PageView style={styles.page} disableDefaultPadding applyOffsetBottomPadding>
             <KeyboardAvoidingView>
                 <View style={styles.widget}>
-                    <Txt type='h1' italic>{i18.Fluently}</Txt>
+                    <Txt type='h1'>{i18.Fluently}</Txt>
                     <VerticalSpacer spacing={16} />
                     <TextField placeholder={i18.Username} autoCapitalize={'none'} />
                     <VerticalSpacer spacing={16} />

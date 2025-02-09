@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useColorScheme } from "react-native";
 import { configureReanimatedLogger, ReanimatedLogLevel } from "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { BottomSheetDelegate } from "~/components/core/layout/bottomSheetModal/bottomSheetDelegate/bottomSheetDelegate";
@@ -12,6 +13,13 @@ configureReanimatedLogger({
 });
 
 export default function RootLayout() {
+    const theme = useColorScheme();
+    const statusTheme = (
+        theme === 'dark'
+        ? 'light'
+        : 'dark'
+    );
+
     return (
       <>
         <StoreProvider>
@@ -24,7 +32,7 @@ export default function RootLayout() {
             <BottomSheetDelegate />
         </StoreProvider>
         <Toast />
-        <StatusBar style="dark" />
+        <StatusBar style={statusTheme} />
       </>
     );
   }

@@ -48,7 +48,7 @@ export default () => {
                 render={content => (
                     <TouchableWithoutFeedback>
                         <View style={{ padding: 16 }}>
-                            <View style={{ height: 120, width: 100, backgroundColor: 'grey', borderRadius: 8 }}/>
+                            <View style={{ height: 200, width: 140, backgroundColor: 'grey', borderRadius: 8 }}/>
                             <Txt type='normal'>{content.title}</Txt>
                         </View>
                     </TouchableWithoutFeedback>
