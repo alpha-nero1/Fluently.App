@@ -1,9 +1,15 @@
+import * as secrets from '~/secrets';
+
 export const ThemeSetting = 'Theme';
 
 export const UserPoolData = {
-    UserPoolId: 'YOUR_USER_POOL_ID',
-    IdentityPoolId: 'xxx',
-    ClientId: 'YOUR_APP_CLIENT_ID'
+    UserPoolId: secrets.CognitoUserPoolId,
+    IdentityPoolId: secrets.CognitoIdentityPoolId,
+    ClientId: secrets.CognitoClientId
+};
+
+export const Aws = {
+    Region: secrets.AwsRegion
 };
 
 export const GoogleWebClientId = 'blahblah'

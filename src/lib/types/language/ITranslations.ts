@@ -3,6 +3,7 @@ export interface ITranslations {
     Login: string;
     Logout: string;
     Username: string;
+    Email_or_phone_number: string;
     Password: string;
     Explore: string;
     Library: string;
@@ -47,4 +48,13 @@ export interface ITranslations {
     Email: string;
     Sign_up_successful: string;
     Happy_learning_exc: string;
+    Login_failed: string;
+    Please_try_again: string;
+    Confirm_the_code_sent_to_0: string;
+    Verification_code: string;
+    Verify: string;
+    Account_verified_exc: string;
+    Account_verified_failed: string;
+    Resend_code: string;
+    Sending_verification_code_failed: string;
 }

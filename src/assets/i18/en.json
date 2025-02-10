@@ -42,6 +42,17 @@
     "OR": "OR",
     "Phone_number": "Phone number",
     "Email": "Email",
+    "Sign_up": "Sign up",
     "Sign_up_successful": "Sign up successful",
-    "Happy_learning_exc": "Happy learning!"
+    "Happy_learning_exc": "Happy learning!",
+    "Email_or_phone_number": "Email or phone number",
+    "Login_failed": "Login failed",
+    "Please_try_again": "Please try again",
+    "Confirm_the_code_sent_to_0": "Confirm the code sent to {0}",
+    "Verification_code": "Verification code",
+    "Verify": "Verify",
+    "Account_verified_exc": "Account verified!",
+    "Account_verified_failed": "Account verification failed",
+    "Resend_code": "Resend code",
+    "Sending_verification_code_failed": "Sending verification code failed"
 }

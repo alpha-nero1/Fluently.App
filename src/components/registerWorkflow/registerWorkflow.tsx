@@ -6,7 +6,7 @@ import { TextField } from '../core/inputs/textField/textField';
 import { Txt } from '../core/layout/txt/Txt';
 import { Button } from '../core/inputs/button/button';
 import { Dropdown } from '../core/inputs/dropdown/dropdown';
-import { Languages } from '~/lib/constants/language';
+import { LearnerLanguages, LearningLanguages } from '~/lib/constants/language';
 import { LanguageItem } from '~/app/main/account';
 import { VerticalSpacer } from '../core/layout/verticalSpacer/verticalSpacer';
 import { getDefaultLearnerLanguage, getDefaultLearningLanguage } from '~/lib/utils/languageUtils';
@@ -15,6 +15,8 @@ import { GestureHandlerRootView, PanGestureHandler, State } from 'react-native-g
 import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import styleFunc from './registerWorkflow.styles';
 import { useColouredStyles } from '~/lib/hooks/useColours';
+import { cognitoApi } from '~/api/cognitoApi';
+import Toast from 'react-native-toast-message';
 
 const { width } = Dimensions.get('screen');
 
@@ -33,6 +35,22 @@ interface IRegisterWorkflowProps {
 const Stage = ({ index, formData, handleChange }: any) => {
     const styles = useColouredStyles(styleFunc);
     const i18 = useI18();
+    const [resendIsLoading, setResendIsLoading] = useState(false);
+
+    const resendCodeOnPress = async () => {
+        const { email, phone } = formData;
+        setResendIsLoading(true);
+        const success = await cognitoApi.resendConfirmationCode(email || phone);
+        setResendIsLoading(false);
+        if (!success) {
+            Toast.show({
+                type: 'error',
+                text1: i18.Sending_verification_code_failed,
+                visibilityTime: 5000,
+                text1Style: { fontSize: 18, fontWeight: 'normal', fontFamily: 'Athelas-Regular' }
+            });
+        }
+    }
 
     const stages = [
         <TouchableWithoutFeedback>
@@ -41,7 +59,7 @@ const Stage = ({ index, formData, handleChange }: any) => {
                 <TextField value={formData.email} onChangeText={value => handleChange('email', value)} placeholder={i18.Email} autoCapitalize='none' />
                 <Txt type='subtitle'>{i18.OR}</Txt>
                 <Txt type='title'>{i18.Phone_number}</Txt>
-                <TextField value={formData.phone} onChangeText={value => handleChange('phone', value)} placeholder={i18.Phone_number} keyboardType='number-pad' />
+                <TextField value={formData.phone} onChangeText={value => handleChange('phone', value)} placeholder={i18.Phone_number} keyboardType='phone-pad' />
             </View>
         </TouchableWithoutFeedback>,
         <TouchableWithoutFeedback>
@@ -51,12 +69,19 @@ const Stage = ({ index, formData, handleChange }: any) => {
             </View>
         </TouchableWithoutFeedback>,
         <TouchableWithoutFeedback>
+            <View key="verificationCode" style={styles.stageForm}>
+                <Txt type='title'>{i18.render(i18.Confirm_the_code_sent_to_0, formData.email || formData.phone)}</Txt>
+                <TextField value={formData.verificationCode} onChangeText={value => handleChange('verificationCode', value)} placeholder={i18.Verification_code} />
+                <Button type='text-info' onPress={resendCodeOnPress} isLoading={resendIsLoading}>{i18.Resend_code}</Button>
+            </View>
+        </TouchableWithoutFeedback>,
+        <TouchableWithoutFeedback>
             <View key="languages" style={styles.stageForm}>
                 <Txt type='title'>{i18.You_speak}</Txt>
-                <Dropdown<Language> selected={formData.learnerLanguage} options={Languages} display={LanguageItem} placeholder={i18.Select_a_langauge} onSelect={(lang) => lang && handleChange('learnerLanguage', lang)} />
+                <Dropdown<Language> selected={formData.learnerLanguage} options={LearnerLanguages} display={LanguageItem} placeholder={i18.Select_a_langauge} onSelect={(lang) => lang && handleChange('learnerLanguage', lang)} />
                 <VerticalSpacer spacing={16} />
                 <Txt type='title'>{i18.You_are_learning}</Txt>
-                <Dropdown<Language> selected={formData.learningLanguage} options={Languages} display={LanguageItem} placeholder={i18.Select_a_langauge} onSelect={(lang) => lang && handleChange('learningLanguage', lang)} />
+                <Dropdown<Language> selected={formData.learningLanguage} options={LearningLanguages} display={LanguageItem} placeholder={i18.Select_a_langauge} onSelect={(lang) => lang && handleChange('learningLanguage', lang)} />
             </View>
         </TouchableWithoutFeedback>
     ]
@@ -65,6 +90,7 @@ const Stage = ({ index, formData, handleChange }: any) => {
 }
 
 export const RegisterWorkflow = ({ onSubmit }: IRegisterWorkflowProps) => {
+    const [submitButtonIsLoading, setSubmitButtonIsLoading] = useState(false);
     const styles = useColouredStyles(styleFunc);
     const [currentStage, setCurrentStage] = useState(0);
     const i18 = useI18();
@@ -79,6 +105,7 @@ export const RegisterWorkflow = ({ onSubmit }: IRegisterWorkflowProps) => {
     const stages = [
         { label: 'Username' },
         { label: 'Password' },
+        { label: 'Verification' },
         { label: 'Language' }
     ];
 
@@ -137,6 +164,51 @@ export const RegisterWorkflow = ({ onSubmit }: IRegisterWorkflowProps) => {
         };
     });
 
+    const handleVerify = async () => {
+        const { username, verificationCode } = formData;
+        setSubmitButtonIsLoading(true);
+        const success = await cognitoApi.confirmSignUp(username, verificationCode);
+        setSubmitButtonIsLoading(false);
+        if (success) {
+            Toast.show({
+                type: 'success',
+                text1: i18.Account_verified_exc,
+                visibilityTime: 5000,
+                text1Style: { fontSize: 18, fontWeight: 'normal', fontFamily: 'Athelas-Regular' },
+            });
+            return handleNext();
+        }
+        Toast.show({
+            type: 'error',
+            text1: i18.Account_verified_failed,
+            text2: i18.Please_try_again,
+            visibilityTime: 5000,
+            text1Style: { fontSize: 18, fontWeight: 'normal', fontFamily: 'Athelas-Regular' },
+            text2Style: { fontSize: 14, fontWeight: 'normal', fontFamily: 'Athelas-Regular' }
+        });
+
+    }
+
+    const getStageButtonText = () => {
+        if (currentStage === stages.length - 1) {
+            return i18.Sign_up_exc;
+        }
+        if (currentStage === stages.length - 2) {
+            return i18.Verify;
+        }
+        return i18.Next;
+    }
+
+    const getStageButtonAction = () => {
+        if (currentStage === stages.length - 1) {
+            return handleSubmit;
+        }
+        if (currentStage === stages.length - 2) {
+            return handleVerify;
+        }
+        return handleNext;
+    }
+
     return (
         
         <GestureHandlerRootView style={{ flex: 1 }}>
@@ -147,11 +219,12 @@ export const RegisterWorkflow = ({ onSubmit }: IRegisterWorkflowProps) => {
                             <Stage index={index} formData={formData} handleChange={handleChange} />
                             <Flex column>
                                 <Button
-                                    onPress={currentStage === stages.length - 1 ? handleSubmit : handleNext}
+                                    onPress={getStageButtonAction()}
                                     type='info'
                                     width={200}
+                                    isLoading={submitButtonIsLoading}
                                 >
-                                    {currentStage === stages.length - 1 ? i18.Sign_up_exc : i18.Next}
+                                    {getStageButtonText()}
                                 </Button>
                                 {currentStage > 0 ? (
                                     <>

@@ -3,7 +3,7 @@ import { ScrollView, View } from 'react-native';
 import { Dropdown } from '~/components/core/inputs/dropdown/dropdown';
 import { PageView } from '~/components/core/layout/pageView/pageView';
 import { Txt } from '~/components/core/layout/txt/Txt';
-import { LanguageIsoCodeMap, Languages } from '~/lib/constants/language';
+import { LanguageIsoCodeMap, LearnerLanguages, LearningLanguages } from '~/lib/constants/language';
 import { Language } from '~/lib/types/enums/Language';
 import CountryFlag from "react-native-country-flag";
 import { useStores } from '~/lib/state/storeProvider';
@@ -15,6 +15,9 @@ import { TextField } from '~/components/core/inputs/textField/textField';
 import { BottomSheetType } from '~/lib/state/stores/bottomSheetStore';
 
 import { styles } from './account.styles';
+import { UsersApi } from '~/api/usersApi';
+import { Feedback } from '~/api/types/feedback';
+import { useAppLogger } from '~/lib/logging/AppLogger';
 
 export const LanguageItem = (language: Language) => {
     return (
@@ -30,14 +33,25 @@ export default () => {
     const [feedback, setFeedback] = useState('');
     const [feedbackSaved, setFeedbackSaved] = useState(false);
     const i18 = useI18();
+    const logger = useAppLogger();
 
     const logoutOnPress = () => {
         router.replace('/auth/login/login');
     }
 
     const submitFeedbackOnPress = () => {
-        setFeedback('');
-        setFeedbackSaved(true);
+        UsersApi.saveFeedback(new Feedback({
+            text: feedback
+        }), settingStore.accessToken)
+        .then(res => {
+            setFeedback('');
+            setFeedbackSaved(true);
+            logger.info('Feedbac saved!')
+        })
+        .catch((err) => {
+            logger.error('Save feedback error: ', err)
+        })
+        
     }
 
     const manageSubscriptionOnPress = () => {
@@ -56,7 +70,7 @@ export default () => {
                 <Txt type='title'>{i18.Language_Settings}</Txt>
                 <Dropdown<Language>
                     selected={settingStore.learnerLanguage}
-                    options={Languages}
+                    options={LearnerLanguages}
                     display={LanguageItem}
                     label={i18.I_speak}
                     placeholder={i18.Select_a_langauge}
@@ -68,7 +82,7 @@ export default () => {
                 <VerticalSpacer spacing={16} />
                 <Dropdown<Language>
                     selected={settingStore.learningLanguage}
-                    options={Languages}
+                    options={LearningLanguages}
                     display={LanguageItem}
                     label={i18.I_am_learning}
                     placeholder={i18.Select_a_langauge}

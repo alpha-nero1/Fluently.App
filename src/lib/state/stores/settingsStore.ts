@@ -1,20 +1,19 @@
 import { Language } from "~/lib/types/enums/Language";
 import { Observable } from "../observable";
-import { UiThemeType } from "~/lib/themes/themes";
 import { getDefaultLearnerLanguage, getDefaultLearningLanguage } from "~/lib/utils/languageUtils";
 
 export interface SettingState {
-  learningLanguage: Language;
-  learnerLanguage: Language;
-  theme: UiThemeType;
+    accessToken: string;
+    learningLanguage: Language;
+    learnerLanguage: Language;
 }
 
 export class SettingStore extends Observable<SettingState> {
     constructor() {
         super({ 
+            accessToken: '',
             learnerLanguage: getDefaultLearnerLanguage(), 
-            learningLanguage: getDefaultLearningLanguage(), 
-            theme: 'Light'
+            learningLanguage: getDefaultLearningLanguage()
         });
     }
 
@@ -26,6 +25,10 @@ export class SettingStore extends Observable<SettingState> {
         return this.getState().learningLanguage;
     }
 
+    public get accessToken() {
+        return this.getState().accessToken;
+    }
+
     public initialise = () => {
         this.load('SettingsStore.learningLanguage')
             .then(lang => {
@@ -35,9 +38,9 @@ export class SettingStore extends Observable<SettingState> {
             .then(lang => {
                 if (lang) this.setLearnerLanguage(lang as Language);
             });
-        this.load('SettingsStore.theme')
-            .then(theme => {
-                if (theme) this.setTheme(theme as UiThemeType);
+        this.load('SettingsStore.accessToken')
+            .then(token => {
+                if (token) this.setAccessToken(token);
             });
     }
 
@@ -55,10 +58,10 @@ export class SettingStore extends Observable<SettingState> {
         });
     }
 
-    public setTheme = (theme: UiThemeType) => {
+    public setAccessToken = (token: string) => {
         this.notify(() => {
-            this.getState().theme = theme;
-            this.persist('SettingsStore.theme', theme);
+            this.getState().accessToken = token;
+            this.persist('SettingsStore.accessToken', token);
         });
     }
 }

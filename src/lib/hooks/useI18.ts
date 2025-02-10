@@ -58,16 +58,27 @@ export const languageCodeToLanguage: { [key in string]: Language } = {
     'zh': Language.ChineseSimplified,
 }
 
+export type I18 = ITranslations & {
+    render: (template: string, ...data: string[]) => string;
+}
+
 /**
  * Internationalisation.
  */
-export const useI18 = (): ITranslations => {
+export const useI18 = (): I18 => {
     const { settingStore } = useStores();
     const learnerLanguage = settingStore.learnerLanguage;
     const defaultFile = en;
     const file = languageToTranslationMap[learnerLanguage];
-    return {
+    const translations = {
         ...defaultFile,
         ...file
+    };
+    translations.render = (template: string, ...data: string[]) => {
+        (data || []).forEach(dataItem => {
+            template.replace(/\{[0-9]\}/, dataItem);
+        })
+        return template;
     }
+    return translations;
 }
