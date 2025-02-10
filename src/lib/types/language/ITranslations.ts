@@ -45,6 +45,7 @@ export interface ITranslations {
     Enter_your_email: string;
     OR: string;
     Phone_number: string;
+    Phone_number_include_country_code: string;
     Email: string;
     Sign_up_successful: string;
     Happy_learning_exc: string;

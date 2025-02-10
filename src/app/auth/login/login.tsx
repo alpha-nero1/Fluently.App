@@ -13,10 +13,10 @@ import { useI18 } from '~/lib/hooks/useI18';
 import { cognitoApi } from '~/api/cognitoApi';
 import { useStores } from '~/lib/state/storeProvider';
 import Toast from 'react-native-toast-message';
-
-import stylesFunc from './loginScreen.styles';
 import { UsersApi } from '~/api/usersApi';
 import { AppUser } from '~/api/types/appUser';
+
+import stylesFunc from './loginScreen.styles';
 
 export default function LoginScreen() {
     const [username, setUsername] = useState<string>('');
@@ -50,6 +50,9 @@ export default function LoginScreen() {
                 text1Style: { fontSize: 18, fontWeight: 'normal', fontFamily: 'Athelas-Regular' },
                 text2Style: { fontSize: 14, fontWeight: 'normal', fontFamily: 'Athelas-Regular' }
             });
+
+            // NOTE: DELETE BEFORE PUBLISH
+            router.replace('/main/explore');
         })
     }
 

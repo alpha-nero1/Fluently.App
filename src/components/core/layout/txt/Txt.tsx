@@ -9,6 +9,7 @@ export type TextType =
     | 'emphasised'
     | 'normal' 
     | 'subtitle'
+    | 'caption'
 
 interface ITxtProps {
     type?: TextType;
@@ -58,6 +59,10 @@ export function Txt(props: ITxtProps) {
     
         if (type === 'emphasised') {
             stl.fontSize = 18;
+        }
+
+        if (type === 'caption') {
+            stl.fontSize = 12;
         }
 
         if (props.style) {

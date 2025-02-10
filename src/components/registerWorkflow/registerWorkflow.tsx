@@ -6,7 +6,7 @@ import { TextField } from '../core/inputs/textField/textField';
 import { Txt } from '../core/layout/txt/Txt';
 import { Button } from '../core/inputs/button/button';
 import { Dropdown } from '../core/inputs/dropdown/dropdown';
-import { LearnerLanguages, LearningLanguages } from '~/lib/constants/language';
+import { DialingCodeToISO, LearnerLanguages, LearningLanguages } from '~/lib/constants/language';
 import { LanguageItem } from '~/app/main/account';
 import { VerticalSpacer } from '../core/layout/verticalSpacer/verticalSpacer';
 import { getDefaultLearnerLanguage, getDefaultLearningLanguage } from '~/lib/utils/languageUtils';
@@ -17,6 +17,7 @@ import styleFunc from './registerWorkflow.styles';
 import { useColouredStyles } from '~/lib/hooks/useColours';
 import { cognitoApi } from '~/api/cognitoApi';
 import Toast from 'react-native-toast-message';
+import CountryFlag from 'react-native-country-flag';
 
 const { width } = Dimensions.get('screen');
 
@@ -31,6 +32,9 @@ export interface IRegisterData {
 interface IRegisterWorkflowProps {
     onSubmit: (data: IRegisterData) => void;
 }
+
+const mobileRegex = /^\+?[1-9]\d{6,14}$/;
+const dialCodeRegex = /^\+([1-9]\d{0,3})/;
 
 const Stage = ({ index, formData, handleChange }: any) => {
     const styles = useColouredStyles(styleFunc);
@@ -52,6 +56,18 @@ const Stage = ({ index, formData, handleChange }: any) => {
         }
     }
 
+    const extractDialCode = (text: string = '') => {
+        const match = text.match(dialCodeRegex);
+        return match ? `+${match[1]}` : '';
+    }
+
+    const validatePhoneNumber = (text?: string) => {
+        if (!text) return 'Required';
+        if (!mobileRegex.test(text)) return 'Invalid format';
+        if (!DialingCodeToISO.has(extractDialCode(text))) return 'Invalid country code';
+        return null;
+    }
+
     const stages = [
         <TouchableWithoutFeedback>
             <View key="email" style={styles.stageForm}>
@@ -59,7 +75,21 @@ const Stage = ({ index, formData, handleChange }: any) => {
                 <TextField value={formData.email} onChangeText={value => handleChange('email', value)} placeholder={i18.Email} autoCapitalize='none' />
                 <Txt type='subtitle'>{i18.OR}</Txt>
                 <Txt type='title'>{i18.Phone_number}</Txt>
-                <TextField value={formData.phone} onChangeText={value => handleChange('phone', value)} placeholder={i18.Phone_number} keyboardType='phone-pad' />
+                <TextField
+                    value={formData.phone} 
+                    onChangeText={value => handleChange('phone', value)} 
+                    placeholder={i18.Phone_number_include_country_code} 
+                    keyboardType='phone-pad'
+                    validation={validatePhoneNumber}
+                    prefix={(text) => {
+                        if (!text || !DialingCodeToISO.has(extractDialCode(text))) return (
+                            <CountryFlag isoCode={'ZZ'} size={25} />
+                        );
+                        return (
+                            <CountryFlag isoCode={DialingCodeToISO.get(extractDialCode(text)) || 'ZZ'} size={25} />
+                        );
+                    }}
+                />
             </View>
         </TouchableWithoutFeedback>,
         <TouchableWithoutFeedback>

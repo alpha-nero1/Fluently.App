@@ -10,6 +10,21 @@ export default (colours: IColours) => StyleSheet.create({
         marginBottom: 8,
         fontFamily: 'Athelas-Regular',
         fontSize: 20,
-        color: colours.Text
+        color: colours.Text,
+        flex: 1
+    },
+    error: {
+        borderWidth: 1,
+        borderColor: colours.Red,
+    },
+    valid: {
+        borderWidth: 1,
+        borderColor: colours.Green,
+    },
+    captionError: {
+        color: colours.Red
+    },
+    captionValid: {
+        color: colours.Green
     }
 });

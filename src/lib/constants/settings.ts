@@ -12,4 +12,9 @@ export const Aws = {
     Region: secrets.AwsRegion
 };
 
+export const RevenueCat = {
+    IosApiKey: secrets.RevenueCatIosApiKey,
+    AndroidApiKey: secrets.RevenueCatAndroidApiKey
+};
+
 export const GoogleWebClientId = 'blahblah'
