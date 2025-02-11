@@ -1,5 +1,7 @@
 # Fluently App
 
+- EJECT OUT OF EXPO []
+
 1) Add actual user log in and signup functionality [✅]
     - Add user confirmation []
     - Test that syncing works []
