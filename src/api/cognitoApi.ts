@@ -81,7 +81,7 @@ export const cognitoApi = (() => {
             await cognitoClient.send(command);
             return true;
         } catch (error: any) {
-            logger.warning('Verification code resend failed', error)
+            logger.warning('Verification code resend failed', error.message)
             return false;
         }
     }

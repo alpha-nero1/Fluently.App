@@ -7,6 +7,8 @@ import { Flex } from '../../layout/flex/flex';
 import styleFunc from './textField.styles';
 
 export type ITextFieldProps = TextInputProps & {
+    valueOnChange: (text?: string, valid?: boolean) => any;
+    
     /**
      * Configure a prefix component for the field.
      */
@@ -44,19 +46,20 @@ export const TextField = (props: ITextFieldProps) => {
     }
 
     const onChangeText = (text: string) => {
-        if (props.validation && isTouched) {
-            const validation = props.validation(text);
+        const validation = props.validation ? props.validation(text) : null;
+        if (isTouched) {
             setErrorMessage(validation);
         }
         if (props.onChangeText) props.onChangeText(text);
+        if (props.valueOnChange) props.valueOnChange(text, !validation);
     }
 
     return (
         <View>
-            <Flex>
+            <Flex alignCenter>
                 {
                     props.prefix ? (
-                        <View style={{ marginRight: 8 }}>
+                        <View style={{ marginRight: 8, marginBottom: 8 }}>
                             {props.prefix(props.value)}
                         </View>
                     ): null

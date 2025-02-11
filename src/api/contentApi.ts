@@ -38,6 +38,15 @@ export const ContentApi = (() => {
         ).then(res => res.data);
     }
 
+    const progress = async (id: string, index: number = 0, length: number = 0): Promise<void> => {
+        await axios.post(`${baseUri}/${id}/progress`,
+            {
+                index,
+                length,
+            }
+        ).then(res => res.data);
+    }
+
     const enrich = async (language: Language, content: string): Promise<WordDictionary> => {
         return await axios.post(`${baseUri}/enrich`,
             {
@@ -47,5 +56,5 @@ export const ContentApi = (() => {
         ).then(res => res.data);
     }
 
-    return { list, get, generate, enrich }
+    return { list, get, generate, enrich, progress }
 })();

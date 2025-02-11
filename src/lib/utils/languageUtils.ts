@@ -4,7 +4,6 @@ import { Language } from '../types/enums/Language';
 
 export const getDefaultLearnerLanguage = () => {
     const languageCode = Localization.getLocales()[0].languageCode || 'en';
-    console.log('aa code is', languageCode)
     return languageCodeToLanguage[languageCode];
 }
 

@@ -6,6 +6,10 @@ import Toast from "react-native-toast-message";
 import { BottomSheetDelegate } from "~/components/core/layout/bottomSheetModal/bottomSheetDelegate/bottomSheetDelegate";
 import { usePurchases } from "~/lib/hooks/usePurchases";
 import { StoreProvider } from "~/lib/state/storeProvider";
+// Sending verification codes with cognito fails without this:
+import "react-native-get-random-values";
+import { useEffect } from "react";
+import { Alert } from 'react-native';
 
 // This is the default configuration
 configureReanimatedLogger({
@@ -21,6 +25,14 @@ export default function RootLayout() {
         ? 'light'
         : 'dark'
     );
+
+    useEffect(() => {
+      if (!global.crypto || !global.crypto.getRandomValues) {
+          Alert.alert("Crypto API is missing!", "Something is wrong with the polyfill.");
+      } else {
+          console.log("✅ Crypto API is available!");
+      }
+    })
 
     return (
       <>

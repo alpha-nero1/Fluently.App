@@ -14,17 +14,27 @@ import { Flex } from '../core/layout/flex/flex';
 import { GestureHandlerRootView, PanGestureHandler, State } from 'react-native-gesture-handler';
 import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import styleFunc from './registerWorkflow.styles';
-import { useColouredStyles } from '~/lib/hooks/useColours';
+import { useColouredStyles, useColours } from '~/lib/hooks/useColours';
 import { cognitoApi } from '~/api/cognitoApi';
 import Toast from 'react-native-toast-message';
 import CountryFlag from 'react-native-country-flag';
+import { router } from 'expo-router';
+import { extractDialCode } from '~/lib/utils/phoneUtils';
 
 const { width } = Dimensions.get('screen');
+
+interface IFieldValues {
+    value?: any;
+    valid?: boolean;
+}
+
+type IFormData = { [key in string]: IFieldValues };
 
 export interface IRegisterData {
     email?: string
     phone?: string
     password: string;
+    verficationCode: string;
     learningLanguage: Language;
     learnerLanguage: Language;
 }
@@ -33,18 +43,28 @@ interface IRegisterWorkflowProps {
     onSubmit: (data: IRegisterData) => void;
 }
 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const mobileRegex = /^\+?[1-9]\d{6,14}$/;
-const dialCodeRegex = /^\+([1-9]\d{0,3})/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
-const Stage = ({ index, formData, handleChange }: any) => {
+interface IStageProps {
+    index: number;
+    formData: IFormData;
+    handleChange: (field: string, value: any, valid?: boolean) => void;
+}
+
+const Stage = ({ index, formData, handleChange }: IStageProps) => {
     const styles = useColouredStyles(styleFunc);
+    const colours = useColours();
     const i18 = useI18();
     const [resendIsLoading, setResendIsLoading] = useState(false);
 
     const resendCodeOnPress = async () => {
         const { email, phone } = formData;
+        if (!email.value && !phone.value) return;
+
         setResendIsLoading(true);
-        const success = await cognitoApi.resendConfirmationCode(email || phone);
+        const success = await cognitoApi.resendConfirmationCode((email.value || phone.value) || '');
         setResendIsLoading(false);
         if (!success) {
             Toast.show({
@@ -56,15 +76,22 @@ const Stage = ({ index, formData, handleChange }: any) => {
         }
     }
 
-    const extractDialCode = (text: string = '') => {
-        const match = text.match(dialCodeRegex);
-        return match ? `+${match[1]}` : '';
+    const validatePassword = (text?: string) => {
+        if (!text) return 'Required';
+        if (!passwordRegex.test(text)) return 'Invalid password';
+        return null;
     }
 
     const validatePhoneNumber = (text?: string) => {
         if (!text) return 'Required';
-        if (!mobileRegex.test(text)) return 'Invalid format';
         if (!DialingCodeToISO.has(extractDialCode(text))) return 'Invalid country code';
+        if (!mobileRegex.test(text)) return 'Invalid format';
+        return null;
+    }
+
+    const validateEmail = (text?: string) => {
+        if (!text && !formData.phone) return 'Required';
+        if (!emailRegex.test(text || '')) return 'Invalid format';
         return null;
     }
 
@@ -72,21 +99,27 @@ const Stage = ({ index, formData, handleChange }: any) => {
         <TouchableWithoutFeedback>
             <View key="email" style={styles.stageForm}>
                 <Txt type='title'>{i18.Enter_your_email}</Txt>
-                <TextField value={formData.email} onChangeText={value => handleChange('email', value)} placeholder={i18.Email} autoCapitalize='none' />
+                <TextField 
+                    value={formData.email.value} 
+                    valueOnChange={(value, valid) => handleChange('email', value, valid)} 
+                    placeholder={i18.Email} 
+                    autoCapitalize='none' 
+                    validation={validateEmail}
+                />
                 <Txt type='subtitle'>{i18.OR}</Txt>
                 <Txt type='title'>{i18.Phone_number}</Txt>
                 <TextField
-                    value={formData.phone} 
-                    onChangeText={value => handleChange('phone', value)} 
+                    value={formData.phone.value} 
+                    valueOnChange={(value, valid) => handleChange('phone', value, valid)} 
                     placeholder={i18.Phone_number_include_country_code} 
                     keyboardType='phone-pad'
                     validation={validatePhoneNumber}
                     prefix={(text) => {
                         if (!text || !DialingCodeToISO.has(extractDialCode(text))) return (
-                            <CountryFlag isoCode={'ZZ'} size={25} />
+                            <View style={{ backgroundColor: colours.Grey, width: 32, height: 20 }}/>
                         );
                         return (
-                            <CountryFlag isoCode={DialingCodeToISO.get(extractDialCode(text)) || 'ZZ'} size={25} />
+                            <CountryFlag isoCode={DialingCodeToISO.get(extractDialCode(text)) || 'UN'} size={20} />
                         );
                     }}
                 />
@@ -95,23 +128,29 @@ const Stage = ({ index, formData, handleChange }: any) => {
         <TouchableWithoutFeedback>
             <View key="password" style={styles.stageForm}>
                 <Txt type='title'>{i18.Enter_your_password}</Txt>
-                <TextField value={formData.password} onChangeText={value => handleChange('password', value)} placeholder={i18.Password} secureTextEntry />
+                <TextField 
+                    value={formData.password.value} 
+                    valueOnChange={(value, valid) => handleChange('password', value, valid)} 
+                    placeholder={i18.Password} 
+                    secureTextEntry
+                    validation={validatePassword}
+                />
             </View>
         </TouchableWithoutFeedback>,
         <TouchableWithoutFeedback>
             <View key="verificationCode" style={styles.stageForm}>
-                <Txt type='title'>{i18.render(i18.Confirm_the_code_sent_to_0, formData.email || formData.phone)}</Txt>
-                <TextField value={formData.verificationCode} onChangeText={value => handleChange('verificationCode', value)} placeholder={i18.Verification_code} />
+                <Txt type='title'>{i18.render(i18.Confirm_the_code_sent_to_0, (formData.email.value || formData.phone.value) || '')}</Txt>
+                <TextField value={formData.verificationCode.value} valueOnChange={(value, valid) => handleChange('verificationCode', value, valid)} placeholder={i18.Verification_code} />
                 <Button type='text-info' onPress={resendCodeOnPress} isLoading={resendIsLoading}>{i18.Resend_code}</Button>
             </View>
         </TouchableWithoutFeedback>,
         <TouchableWithoutFeedback>
             <View key="languages" style={styles.stageForm}>
                 <Txt type='title'>{i18.You_speak}</Txt>
-                <Dropdown<Language> selected={formData.learnerLanguage} options={LearnerLanguages} display={LanguageItem} placeholder={i18.Select_a_langauge} onSelect={(lang) => lang && handleChange('learnerLanguage', lang)} />
+                <Dropdown<Language> selected={formData.learnerLanguage.value} options={LearnerLanguages} display={LanguageItem} placeholder={i18.Select_a_langauge} onSelect={(lang) => lang && handleChange('learnerLanguage', lang)} />
                 <VerticalSpacer spacing={16} />
                 <Txt type='title'>{i18.You_are_learning}</Txt>
-                <Dropdown<Language> selected={formData.learningLanguage} options={LearningLanguages} display={LanguageItem} placeholder={i18.Select_a_langauge} onSelect={(lang) => lang && handleChange('learningLanguage', lang)} />
+                <Dropdown<Language> selected={formData.learningLanguage.value} options={LearningLanguages} display={LanguageItem} placeholder={i18.Select_a_langauge} onSelect={(lang) => lang && handleChange('learningLanguage', lang)} />
             </View>
         </TouchableWithoutFeedback>
     ]
@@ -124,12 +163,13 @@ export const RegisterWorkflow = ({ onSubmit }: IRegisterWorkflowProps) => {
     const styles = useColouredStyles(styleFunc);
     const [currentStage, setCurrentStage] = useState(0);
     const i18 = useI18();
-    const [formData, setFormData] = useState({
-        email: '',
-        phone: '',
-        password: '',
-        learningLanguage: getDefaultLearningLanguage(),
-        learnerLanguage: getDefaultLearnerLanguage()
+    const [formData, setFormData] = useState<IFormData>({
+        email: { value: '' },
+        phone: { value: '' },
+        password: { value: '' },
+        learningLanguage: { value: getDefaultLearningLanguage() },
+        learnerLanguage: { value: getDefaultLearnerLanguage() },
+        verificationCode: { value: '' }
     });
 
     const stages = [
@@ -152,14 +192,35 @@ export const RegisterWorkflow = ({ onSubmit }: IRegisterWorkflowProps) => {
         if (currentStage > 0) {
             setCurrentStage(currentStage - 1);
         }
+        router.back();
     };
 
-    const handleSubmit = () => onSubmit(formData);
+    const nextIsValid = () => {
+        if (currentStage === 0) {
+            return formData.email.valid || formData.phone.valid;
+        }
+        if (currentStage === 1) {
+            return formData.password.valid;
+        }
+        if (currentStage === 2) {
+            return !!formData.verificationCode.value;
+        }
+        return formData.learnerLanguage.value !== Language.Unknown
+            && formData.learningLanguage.value !== Language.Unknown;
+    }
 
-    const handleChange = (field: string, value: any) => {
+    const handleSubmit = () => {
+        const _formData: any = {};
+        Object.keys(formData).forEach(key => {
+            _formData[key] = formData[key].value
+        });
+        onSubmit(_formData);
+    }
+
+    const handleChange = (field: string, value: any, valid: boolean = false) => {
         setFormData((prev: any) => ({
             ...prev,
-            [field]: value
+            [field]: { value, valid }
         }));
     };
 
@@ -195,9 +256,10 @@ export const RegisterWorkflow = ({ onSubmit }: IRegisterWorkflowProps) => {
     });
 
     const handleVerify = async () => {
-        const { username, verificationCode } = formData;
+        const { email, phone, verificationCode } = formData;
         setSubmitButtonIsLoading(true);
-        const success = await cognitoApi.confirmSignUp(username, verificationCode);
+        const username = email.value || phone.value;
+        const success = await cognitoApi.confirmSignUp(username, verificationCode.value);
         setSubmitButtonIsLoading(false);
         if (success) {
             Toast.show({
@@ -252,18 +314,15 @@ export const RegisterWorkflow = ({ onSubmit }: IRegisterWorkflowProps) => {
                                     onPress={getStageButtonAction()}
                                     type='info'
                                     width={200}
+                                    disabled={!nextIsValid()}
                                     isLoading={submitButtonIsLoading}
                                 >
                                     {getStageButtonText()}
                                 </Button>
-                                {currentStage > 0 ? (
-                                    <>
-                                        <VerticalSpacer spacing={16} />
-                                        <Button onPress={handleBack} type='text-info'>
-                                            {i18.Back}
-                                        </Button>
-                                    </>
-                                ) : null}
+                                <VerticalSpacer spacing={16} />
+                                <Button onPress={handleBack} type='text-info'>
+                                    {i18.Back}
+                                </Button>
                             </Flex>
                         </View>
                     ))}
