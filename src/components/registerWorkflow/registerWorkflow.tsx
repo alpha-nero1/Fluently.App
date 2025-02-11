@@ -291,12 +291,29 @@ export const RegisterWorkflow = ({ onSubmit }: IRegisterWorkflowProps) => {
         return i18.Next;
     }
 
+    const handleSignup = () => {
+        const username = formData.email.value || formData.phone.value;
+        setSubmitButtonIsLoading(true);
+        console.log('aa trying signup');
+        return cognitoApi.signUp(username, formData.password.value)
+        .then(res => {
+            console.log('aa res', res);
+            setCurrentStage(currentStage + 1);
+        })
+        .finally(() => {
+            setSubmitButtonIsLoading(false);
+        });
+    }
+
     const getStageButtonAction = () => {
-        if (currentStage === stages.length - 1) {
+        if (currentStage === 3) {
             return handleSubmit;
         }
-        if (currentStage === stages.length - 2) {
+        if (currentStage === 2) {
             return handleVerify;
+        }
+        if (currentStage === 1) {
+            return handleSignup;
         }
         return handleNext;
     }

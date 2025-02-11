@@ -16,34 +16,27 @@ export default function RegisterScreen() {
 
     const onSubmit = (data: IRegisterData) => {
         const username = data.email ? data.email : data.phone ?? '';
-        console.log('aa trying', username, data.password)
-        cognitoApi.signUp(username, data.password)
-        .then(res => {
-            // Now that it has succeeded, let's auto log the user in!
-            cognitoApi.signIn(username, data.password)
-            .then(bearer => {
-                settingStore.setAccessToken(bearer);
-                UsersApi.sync(new AppUser({
-                    email: data.email,
-                    phone: data.phone,
-                    learnerLanguage: data.learnerLanguage,
-                    learningLanguage: data.learningLanguage
-                }), bearer);
-                // Do api shiz here!
-                router.replace('/main/explore');
-                Toast.show({
-                    type: 'success',
-                    text1: i18.Sign_up_successful,
-                    text2: i18.Happy_learning_exc,
-                    visibilityTime: 2000,
-                    text1Style: { fontSize: 18, fontWeight: 'normal', fontFamily: 'Athelas-Regular' },
-                    text2Style: { fontSize: 14, fontWeight: 'normal', fontFamily: 'Athelas-Regular' }
-                });
+        // Now that it has succeeded, let's auto log the user in!
+        cognitoApi.signIn(username, data.password)
+        .then(bearer => {
+            settingStore.setAccessToken(bearer);
+            UsersApi.sync(new AppUser({
+                email: data.email,
+                phone: data.phone,
+                learnerLanguage: data.learnerLanguage,
+                learningLanguage: data.learningLanguage
+            }), bearer);
+            // Do api shiz here!
+            router.replace('/main/explore');
+            Toast.show({
+                type: 'success',
+                text1: i18.Sign_up_successful,
+                text2: i18.Happy_learning_exc,
+                visibilityTime: 2000,
+                text1Style: { fontSize: 18, fontWeight: 'normal', fontFamily: 'Athelas-Regular' },
+                text2Style: { fontSize: 14, fontWeight: 'normal', fontFamily: 'Athelas-Regular' }
             });
-        })
-        .catch(err => {
-            console.error(err);
-        })
+        });
     }
 
     return (

@@ -30,6 +30,7 @@ export const cognitoApi = (() => {
     const signUp = (username: string, password: string): Promise<ISignUpResult> => {
         return new Promise((resolve, reject) => {
             userPool.signUp(username, password, [], null, (err, result) => {
+                console.log('aa signup!', result)
                 if (err) {
                     return reject(err);
                 }
