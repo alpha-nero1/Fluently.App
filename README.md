@@ -44,4 +44,5 @@
 
 ```
 npx react-native-clean-project
+git rm --cached fluentlyapp
 ```
