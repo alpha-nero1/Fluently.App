@@ -41,3 +41,7 @@
 - Implement char based pages so that text always perfectly fits. [✅]
 - Integrate sets data with the app [✅]
 - When content is enriched, the dictionary as a whole updates. [✅]
+
+```
+npx react-native-clean-project
+```
