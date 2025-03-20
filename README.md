@@ -1,4 +1,6 @@
 # Fluently App
+Wildly important goal: **To get Fluently app to market by May 3.**
+
 
 2) Add subscription functionality - backend and front end []
     - Subscription restrictions on front end []
@@ -58,6 +60,7 @@
 - Integrate sets data with the app [✅]
 - When content is enriched, the dictionary as a whole updates. [✅]
 
+## If you find fluentlyapp is not being picked up by git:
 ```
 npx react-native-clean-project
 git rm --cached fluentlyapp
