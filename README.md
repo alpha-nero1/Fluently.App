@@ -1,8 +1,10 @@
 # Fluently App
 Wildly important goal: **To get Fluently app to market by May 3.**
 
+Ask yourself this question: *Are you really willing to derail release for this unimportant little feature?*
 
-2) Add subscription functionality - backend and front end []
+## TO DO
+Add subscription functionality - backend and front end []
     - Subscription restrictions on front end []
     - Subscribe dialog []
     - Take payment []
@@ -14,9 +16,13 @@ Wildly important goal: **To get Fluently app to market by May 3.**
 - When open a book you are taken to where you were up to []
 - Be able to add cards raw to the set []
 
+## IN PROGRESS
 - Display & allow chapter navigation []
-- Edit a card after it has been saved []
-- Fix code not going into src control []
+
+## DONE
+- Edit a card after it has been saved [✅]
+- Auto log in [✅]
+- Fix code not going into src control [✅] - solution documented down below.
 - Store the "category of the book" for ease of browsing [✅]
 - Make words multi language directional [✅]
 - Setting language learner and learning NOT saving [✅]

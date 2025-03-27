@@ -9,11 +9,9 @@ import { Screens } from '~/lib/types/enums/Screens';
 import LoginScreen from './auth/login/login';
 import RegisterScreen from './auth/register/registerScreen';
 import MainScreen from './main/main';
-import { StoreProvider } from '~/lib/state/storeProvider';
+import { StoreProvider, useStores } from '~/lib/state/storeProvider';
 import Purchases from 'react-native-purchases';
 import { RevenueCat } from '~/lib/constants/settings';
-import { AsyncStorageUtils } from '~/lib/utils/asyncStorageUtils';
-import { PersistableKeys } from '~/lib/state/stores/settingsStore';
 
 // This is the default configuration for reanimated
 configureReanimatedLogger({
@@ -32,17 +30,24 @@ Purchases.configure({
   diagnosticsEnabled: true
 });
 
+/**
+ * Handles initialising the app and auto login.
+ */
 function PrelaunchChecks() {
-  const navigator = useNavigation<any>();
+  const settingStore = useStores().settingStore;
+  const navigation = useNavigation<any>();
+
   useEffect(() => {
-    AsyncStorageUtils.get(PersistableKeys.AccessToken)
-    .then(res => {
-      if (res) {
-        navigator.replace(Screens.Main)
-      }
-    })
+    settingStore.initialise();
   }, []);
-  return <></>
+
+  useEffect(() => {
+    if (settingStore.accessToken) {
+      navigation.navigate(Screens.Main);
+    }
+  }, [settingStore.accessToken]);
+
+  return null;
 }
 
 export default function App() {

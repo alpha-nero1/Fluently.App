@@ -5,6 +5,7 @@ import { SetCard } from "~/api/types/setCard";
 import { Button } from "~/components/core/inputs/button/button";
 import { TextField } from "~/components/core/inputs/textField/textField";
 import { Flex } from "~/components/core/layout/flex/flex";
+import { VerticalSpacer } from "~/components/core/layout/verticalSpacer/verticalSpacer";
 import { useI18 } from "~/lib/hooks/useI18";
 import { useAppLogger } from "~/lib/logging/AppLogger";
 import { useStores } from "~/lib/state/storeProvider";
@@ -59,6 +60,11 @@ export const EditWordContent = (props: IEditWordContentProps) => {
                     valueOnChange={(txt) => handleChange('name', txt)}
                 />
                 <TextField 
+                    placeholder="Definite article" 
+                    value={setCard.definiteArticle}
+                    valueOnChange={(txt) => handleChange('definiteArticle', txt)}
+                />
+                <TextField 
                     placeholder="Meaning" 
                     value={setCard.meaning} 
                     valueOnChange={(txt) => handleChange('meaning', txt)}
@@ -89,6 +95,7 @@ export const EditWordContent = (props: IEditWordContentProps) => {
                     valueOnChange={(txt) => handleChange('versions', txt)}
                 />            
             </View>
+            <VerticalSpacer spacing={32} />
             <Flex alignCenter flex={1} style={{ height: 50 }}>
                 <Button 
                     onPress={props.onCancel}
@@ -108,6 +115,7 @@ export const EditWordContent = (props: IEditWordContentProps) => {
                     {i18.Save}
                 </Button>
             </Flex>
+            <VerticalSpacer spacing={16} />
         </Flex>
     );
 }

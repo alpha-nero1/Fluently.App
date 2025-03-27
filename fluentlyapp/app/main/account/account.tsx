@@ -44,6 +44,7 @@ export const AccountScreen = () => {
 
     const logoutOnPress = () => {
         navigation.replace(Screens.Login);
+        settingStore.removeAccessToken()
     }
 
     const submitFeedbackOnPress = () => {

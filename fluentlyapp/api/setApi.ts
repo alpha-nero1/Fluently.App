@@ -83,7 +83,8 @@ export const useSetApi = (accessToken: string) => {
     const updateSetCard = async (setId: number, setCardId: number, value: SetCard): Promise<void> => {
         return await axios.patch(
             `${baseUri}/${setId}/card/${setCardId}`,
-            { value }
+            { value },
+            headers
         );
     }
 

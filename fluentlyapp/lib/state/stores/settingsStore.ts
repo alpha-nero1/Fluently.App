@@ -104,6 +104,13 @@ export class SettingStore extends Observable<SettingState> {
         });
     }
 
+    public removeAccessToken = () => {
+        this.notify(() => {
+            this.getState().accessToken = '';
+            this.remove(PersistableKeys.AccessToken);
+        });
+    }
+
     public setRevisionSize = (size: number) => {
         this.notify(() => {
             this.getState().revisionSize = size;

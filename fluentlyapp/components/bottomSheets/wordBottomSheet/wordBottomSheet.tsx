@@ -3,9 +3,8 @@ import { SetCard } from '~/api/types/setCard';
 import { WordBase } from '~/api/types/wordBase';
 import { BottomSheetModal } from '~/components/core/layout/bottomSheetModal/bottomSheetModal'
 import { EditWordContent } from '~/components/wordContent/editWordContent/editWordContent';
-
-
 import { InspectWordContent } from '~/components/wordContent/inspectWordContent/inspectWordContent';
+import { useStores } from '~/lib/state/storeProvider';
 
 interface IWordBottomSheetProps {
     isOpen?: boolean;
@@ -14,14 +13,28 @@ interface IWordBottomSheetProps {
 }
 
 export const WordBottomSheet = ({ word, onClose, isOpen }: IWordBottomSheetProps) => {
-    const [isEditing, setIsEditing] = useState(false);
+    const { bottomSheetStore } = useStores();
+    const [isEditing, _setIsEditing] = useState(false);
     
+    const setIsEditing = (editing: boolean) => {
+        const msg = bottomSheetStore.message!;
+        bottomSheetStore.closeMessage(msg);
+        
+        if (!editing) {
+            _setIsEditing(false);
+            return;
+        }
+        setTimeout(() => {
+            _setIsEditing(editing);
+            bottomSheetStore.setMessage(msg);
+        }, 100);
+    }
+
     return (
         <BottomSheetModal
             isOpen={isOpen && !!word}
-            snapPoints={['60%']}
             onClose={onClose}
-        >
+        > 
             {isEditing ? (
                 <EditWordContent 
                     setCard={word as SetCard}

@@ -20,13 +20,18 @@ export class Observable<T extends object> {
         this.listeners.forEach((listener) => listener());
     }
 
-    protected async load(key: string) {
-        return await AsyncStorageUtils.get(JSON.parse(key))
-    }
+    protected load = (key: string) => AsyncStorageUtils.get(key);
+    protected remove = (key: string) => AsyncStorageUtils.remove(key);
 
     protected persist(key: string, value: any) {
-        if (!value) return;
-        AsyncStorageUtils.set(key, JSON.stringify(value));
+        if (typeof value === 'undefined') return;
+
+        const valToSet = (() => {
+            if (typeof value === 'string') return value;
+            if (typeof value === 'object') return JSON.stringify(value);
+            return `${value}`;
+        })();
+        AsyncStorageUtils.set(key, valToSet);
     }
   
     getState(): T {

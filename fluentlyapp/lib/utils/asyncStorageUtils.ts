@@ -9,6 +9,14 @@ export const AsyncStorageUtils = (() => {
             console.error('Error saving data', error);
         }
     };
+
+    const remove = async (key: string) => {
+        try {
+            await AsyncStorage.removeItem(key);
+        } catch (error) {
+            console.error('Error removing data', error);
+        }
+    };
     
     // Retrieve a setting
     const get = async (key: string) => {
@@ -23,7 +31,7 @@ export const AsyncStorageUtils = (() => {
         return null;
     };
 
-    return { get, set }
+    return { get, set, remove }
 })();
 
 

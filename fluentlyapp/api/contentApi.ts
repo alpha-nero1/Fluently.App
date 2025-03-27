@@ -10,7 +10,7 @@ import { getHeaders } from "~/lib/utils/apiUtils";
 import { LibraryContent } from "./types/libraryContent";
 
 axios.interceptors.request.use(full => {
-    console.log('Executed api call to: ', full.url, 'Auth = ', full.headers.Authorization);
+    console.log(`Executed ${full.method} api call to: `, full.url, 'Auth = ', full.headers.Authorization);
     return full;
 });
 
