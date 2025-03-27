@@ -6,20 +6,19 @@ import { SpeakIcon } from "../../speakIcon/speakIcon";
 import { View } from "react-native";
 import { useStores } from "~/lib/state/storeProvider";
 import { Flex } from "~/components/core/layout/flex/flex";
+import { getName } from "~/lib/utils/wordUtils";
 
 interface IInspectWordDetailsProps {
     word: WordBase;
-    isEditing?: boolean;
-    isLoading?: boolean;
 }
 
 /**
  * Displays either the word content details or the edit form.
  */
-export const InspectWordDetails = ({ word, ...props }: IInspectWordDetailsProps) => {
+export const InspectWordDetails = ({ word }: IInspectWordDetailsProps) => {
     const i18 = useI18();
     const { settingStore } = useStores();
-    
+
     const getExplanation = () => {
         if (!word?.infinitive) return '';
         return word.explanation;
@@ -37,21 +36,11 @@ export const InspectWordDetails = ({ word, ...props }: IInspectWordDetailsProps)
         return word?.name;
     }
 
-    const getName = () => {
-        if (word?.definiteArticle) {
-            return `(${word.definiteArticle}) ${word.name}`.trim()
-        }
-        if (word?.infinitive && word.infinitive !== word.name) {
-            return `${word.name} (${word.infinitive})`.trim()
-        }
-        return word?.name?.trim();
-    }
-
     return (
         <>
             <Flex alignCenter justifySpaceBetween flex={1}>
                 <View style={{ width: 40 }}/>
-                <Txt type='h1'>{getName()}</Txt>
+                <Txt type='h1'>{getName(word)}</Txt>
                 <SpeakIcon text={getSpeakableName()} language={settingStore.learningLanguage} />
             </Flex>
             <VerticalSpacer spacing={16} />

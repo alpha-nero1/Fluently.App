@@ -11,6 +11,7 @@ import { useSetApi } from '~/api/setApi';
 import { showToast } from '~/lib/utils/toastUtils';
 import { InspectWordActions } from './inspectWordActions/inspectWordActions';
 import { InspectWordDetails } from './inspectWordDetails/inspectWordDetails';
+import { getName } from '~/lib/utils/wordUtils';
 
 interface IInspectWordContentProps {
     word: WordBase | null;
@@ -24,7 +25,6 @@ interface IInspectWordContentProps {
 export const InspectWordContent = (props: IInspectWordContentProps) => {
     const { setStore, settingStore } = useStores();
     const [isLoading, setIsLoading] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
     const setApi = useSetApi(settingStore.accessToken);
     const i18 = useI18();
     const { word } = props;
@@ -56,7 +56,7 @@ export const InspectWordContent = (props: IInspectWordContentProps) => {
             setStore.addCards(setCards);
             setIsLoading(false);
             props.onClose();
-            showToast('success', [i18.render(i18._0_saved_exc, getName())])
+            showToast('success', [i18.render(i18._0_saved_exc, getName(word))])
         } catch (e) {
             setIsLoading(false);
             props.onClose();
@@ -72,25 +72,12 @@ export const InspectWordContent = (props: IInspectWordContentProps) => {
         }
     }
 
-    const getName = () => {
-        if (word?.definiteArticle) {
-            return `(${word.definiteArticle}) ${word.name}`.trim()
-        }
-        if (word?.infinitive && word.infinitive !== word.name) {
-            return `${word.name} (${word.infinitive})`.trim()
-        }
-        return word?.name?.trim();
-    }
-
     return (
         <View style={styles.container}>
-            <InspectWordDetails 
-                word={word} 
-                isEditing={isEditing} 
-            />
+            <InspectWordDetails word={word} />
             <VerticalSpacer spacing={32} />
             <InspectWordActions 
-                name={getName()}
+                name={getName(word)}
                 word={word}
                 saved={wordSaved}
                 isLoading={isLoading}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { KeyboardAvoidingView, View } from 'react-native'
 import { Txt } from '~/components/core/layout/txt/Txt';
 import { Button } from '~/components/core/inputs/button/button';

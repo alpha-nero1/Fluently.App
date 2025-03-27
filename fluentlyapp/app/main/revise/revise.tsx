@@ -1,27 +1,26 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useMemo, useCallback } from 'react'
 import { CircularProgress } from '~/components/core/layout/circularProgress/circularProgress'
 import { PageView } from '~/components/core/layout/pageView/pageView'
 import { Txt } from '~/components/core/layout/txt/Txt'
-import { FlatList, RefreshControl, TouchableWithoutFeedback, View } from 'react-native';
+import { FlatList, TouchableWithoutFeedback, View } from 'react-native';
 import { SetCardGrade } from '~/lib/types/enums/SetCardGrade';
 import { deepCopyArray } from '~/lib/utils/arrayUtils';
 import { VerticalSpacer } from '~/components/core/layout/verticalSpacer/verticalSpacer';
 import { Lozenge, LozengeStatus } from '~/components/core/layout/lozenge/lozenge';
-import { useApiContext } from '~/lib/hooks/useApiContext';
-import { useSetApi } from '~/api/setApi';
 import { useStores } from '~/lib/state/storeProvider';
 import { Button } from '~/components/core/inputs/button/button';
 import { SetCard } from '~/api/types/setCard';
 import { BottomSheetType } from '~/lib/state/stores/bottomSheetStore';
-import { useColouredStyles, useColours } from '~/lib/hooks/useColours';
+import { useColouredStyles } from '~/lib/hooks/useColours';
 import { useI18 } from '~/lib/hooks/useI18';
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import { ReviseSet } from './reviseSet/reviseSet';
 import { Screens } from '~/lib/types/enums/Screens';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
 import { IconButton } from '~/components/core/inputs/iconButton/iconButton';
 import { Flex } from '~/components/core/layout/flex/flex';
+import { getName } from '~/lib/utils/wordUtils';
 
 import { styleFunc } from './revise.styles';
 
@@ -168,7 +167,7 @@ const Revise = () => {
                         <TouchableWithoutFeedback onPress={() => openCardDetails(card)}>
                             <View style={styles.setCardOutline} key={card.name}>
                                 <View style={styles.setCardOutlineLeft}>
-                                    <Txt bold>{card.name}</Txt>
+                                    <Txt bold>{getName(card)}</Txt>
                                     <Txt>{card.meaning}</Txt>
                                 </View>
                                 <Flex>
