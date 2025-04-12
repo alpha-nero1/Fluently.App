@@ -2,9 +2,9 @@ import React, { useRef, useCallback, useMemo } from 'react';
 import { View, TouchableWithoutFeedback, StyleSheet, TouchableOpacity } from 'react-native';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useColouredStyles } from '~/lib/hooks/useColouredStyles';
 
 import styleFunc from './bottomSheetModal.styles';
-import { useColouredStyles } from '~/lib/hooks/useColours';
 
 export interface IBottomSheetModalProps {
   isOpen?: boolean;

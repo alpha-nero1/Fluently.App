@@ -1,8 +1,9 @@
-import { FlatList, ScrollView, StyleSheet, TouchableWithoutFeedback} from "react-native";
-import { Txt } from "../txt/Txt";
-import { IColours } from "~/lib/themes/colours";
-import { useColouredStyles, useColours } from "~/lib/hooks/useColours";
-import { LinearGradient } from "react-native-linear-gradient";
+import { FlatList, ScrollView, StyleSheet, TouchableWithoutFeedback} from 'react-native';
+import { Txt } from '../txt/Txt';
+import { IColours } from '~/lib/themes/colours';
+import { useColours } from '~/lib/hooks/useColours';
+import { useColouredStyles } from '~/lib/hooks/useColouredStyles';
+import { LinearGradient } from 'react-native-linear-gradient';
 
 interface IRenderProps<TContent> {
     render: (content: TContent) => any

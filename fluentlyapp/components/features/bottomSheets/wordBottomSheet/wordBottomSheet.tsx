@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { SetCard } from '~/api/types/setCard';
 import { WordBase } from '~/api/types/wordBase';
 import { BottomSheetModal } from '~/components/core/layout/bottomSheetModal/bottomSheetModal'
-import { EditWordContent } from '~/components/wordContent/editWordContent/editWordContent';
-import { InspectWordContent } from '~/components/wordContent/inspectWordContent/inspectWordContent';
+import { EditWordContent } from '~/components/features/wordContent/editWordContent/editWordContent';
+import { InspectWordContent } from '~/components/features/wordContent/inspectWordContent/inspectWordContent';
 import { useStores } from '~/lib/state/storeProvider';
 
 interface IWordBottomSheetProps {

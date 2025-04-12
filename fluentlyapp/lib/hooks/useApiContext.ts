@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback, useEffect, useState } from "react";
 
 interface ApiContextOptions<TData> {
     id: string;
+    refreshable?: boolean;
     fetcher: () => Promise<TData>;
     dataInterceptor?: (data: TData) => void;
 }
@@ -35,6 +37,8 @@ export const useApiContext = <TData> (ops: ApiContextOptions<TData>): ApiContext
             });
     }
 
+    const refresh = loadData;
+
     useEffect(loadData, [ops.id]);
 
     useEffect(() => {
@@ -43,7 +47,13 @@ export const useApiContext = <TData> (ops: ApiContextOptions<TData>): ApiContext
         }
     }, [apiState]);
 
-    const refresh = loadData;
+    useFocusEffect(
+        useCallback(() => {
+            if (ops.refreshable && !apiState) {
+                refresh();
+            }
+        }, [])
+    );
 
     return {
         data: apiState,

@@ -7,7 +7,7 @@ import {
 import { useStores } from "~/lib/state/storeProvider";
 import { BottomSheetType } from "~/lib/state/stores/bottomSheetStore";
 import { Txt } from "../../layout/txt/Txt";
-import { useColouredStyles } from "~/lib/hooks/useColours";
+import { useColouredStyles } from '~/lib/hooks/useColouredStyles';
 import { useI18 } from "~/lib/hooks/useI18";
 
 import styleFunc from './dropdown.styles';

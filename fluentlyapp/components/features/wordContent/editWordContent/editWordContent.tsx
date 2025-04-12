@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Dimensions, View } from "react-native";
+import { View } from "react-native";
 import { useSetApi } from "~/api/setApi";
 import { SetCard } from "~/api/types/setCard";
 import { Button } from "~/components/core/inputs/button/button";

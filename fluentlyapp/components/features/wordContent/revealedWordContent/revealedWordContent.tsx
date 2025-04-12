@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { WordBase } from '~/api/types/wordBase';
 import { Flex } from '~/components/core/layout/flex/flex';
 import { Txt } from '~/components/core/layout/txt/Txt';

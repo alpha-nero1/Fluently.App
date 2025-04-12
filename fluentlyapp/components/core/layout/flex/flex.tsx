@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ViewStyle } from 'react-native';
 
 interface IFlexProps {
     children?: any;
@@ -19,7 +19,7 @@ interface IFlexProps {
     flex?: number;
     flexWrap?: boolean;
     testBorder?: boolean;
-    style?: any;
+    style?: ViewStyle;
 }
 
 /**

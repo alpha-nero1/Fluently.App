@@ -8,7 +8,7 @@ import { LinearProgress } from '~/components/core/layout/linearProgress/linearPr
 import { Loader } from '~/components/core/layout/loader/loader';
 import { PageView } from '~/components/core/layout/pageView/pageView';
 import { VerticalSpacer } from '~/components/core/layout/verticalSpacer/verticalSpacer';
-import { StudyCard } from '~/components/revision/studyCard/studyCard';
+import { StudyCard } from '~/components/features/revision/studyCard/studyCard';
 import { useApiContext } from '~/lib/hooks/useApiContext';
 import { useStores } from '~/lib/state/storeProvider';
 import { SetCardGrade } from '~/lib/types/enums/SetCardGrade';

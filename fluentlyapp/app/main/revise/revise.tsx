@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useMemo, useCallback, useState } from 'react'
 import { CircularProgress } from '~/components/core/layout/circularProgress/circularProgress'
 import { PageView } from '~/components/core/layout/pageView/pageView'
 import { Txt } from '~/components/core/layout/txt/Txt'
@@ -11,7 +11,7 @@ import { useStores } from '~/lib/state/storeProvider';
 import { Button } from '~/components/core/inputs/button/button';
 import { SetCard } from '~/api/types/setCard';
 import { BottomSheetType } from '~/lib/state/stores/bottomSheetStore';
-import { useColouredStyles } from '~/lib/hooks/useColours';
+import { useColouredStyles } from '~/lib/hooks/useColouredStyles';
 import { useI18 } from '~/lib/hooks/useI18';
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import { ReviseSet } from './reviseSet/reviseSet';
@@ -79,6 +79,7 @@ const Revise = () => {
     const styles = useColouredStyles(styleFunc);
     const i18 = useI18();
     const navigation = useNavigation<StackNavigationProp<StackParamList>>();
+    const [isOpen, setIsOpen] = useState(false);
 
     useFocusEffect(
         useCallback(() => {
@@ -114,7 +115,8 @@ const Revise = () => {
     }
 
     const reviseOnPress = () => {
-        navigation.navigate(Screens.ReviseSet);
+        setIsOpen(true);
+        //navigation.navigate(Screens.ReviseSet);
     }
 
     const openCardDetails = (card: SetCard) => {

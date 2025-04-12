@@ -1,11 +1,14 @@
 import React from 'react'
 import { BasicContent } from '~/api/types/basicContent';
+import { Content } from '~/api/types/content';
+import { ContentSection } from '~/api/types/contentSection';
 import { Word } from '~/api/types/word';
-import { DropDownBottomSheet } from '~/components/bottomSheets/dropdownBottomSheet/dropdownBottomSheet';
-import { ManageSubscriptionBottomSheet } from '~/components/bottomSheets/manageSubscriptionBottomSheet/manageSubscriptionBottomSheet';
-import { ReadNowBottomSheet } from '~/components/bottomSheets/readNowBottomSheet/readNowBottomSheet';
-import { RevisionSettingsBottomSheet } from '~/components/bottomSheets/revisionSettingsBottomSheet/revisionSettingsBottomSheet';
-import { WordBottomSheet } from '~/components/bottomSheets/wordBottomSheet/wordBottomSheet';
+import { DropDownBottomSheet } from '~/components/features/bottomSheets/dropdownBottomSheet/dropdownBottomSheet';
+import { ManageSubscriptionBottomSheet } from '~/components/features/bottomSheets/manageSubscriptionBottomSheet/manageSubscriptionBottomSheet';
+import { MenuBottomSheet } from '~/components/features/bottomSheets/menuBottomSheet/menuBottomSheet';
+import { ReadNowBottomSheet } from '~/components/features/bottomSheets/readNowBottomSheet/readNowBottomSheet';
+import { RevisionSettingsBottomSheet } from '~/components/features/bottomSheets/revisionSettingsBottomSheet/revisionSettingsBottomSheet';
+import { WordBottomSheet } from '~/components/features/bottomSheets/wordBottomSheet/wordBottomSheet';
 import { useStores } from '~/lib/state/storeProvider'
 import { BottomSheetType } from '~/lib/state/stores/bottomSheetStore';
 
@@ -42,6 +45,11 @@ export const BottomSheetDelegate = () => {
             <ReadNowBottomSheet 
                 isOpen={bottomSheetStore.message?.type === BottomSheetType.ReadNow}
                 content={bottomSheetStore.message?.data as BasicContent}
+                onClose={bottomSheetStore.closeMessage}
+            />
+            <MenuBottomSheet 
+                isOpen={bottomSheetStore.message?.type === BottomSheetType.Menu}
+                sections={bottomSheetStore.message?.data as ContentSection[]}
                 onClose={bottomSheetStore.closeMessage}
             />
             {/* ... other bottom sheets */}

@@ -1,18 +1,21 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { View, Dimensions } from 'react-native'
 import { ContentReaderPage } from './contentReaderPage/contentReaderPage';
-import { Txt } from '../core/layout/txt/Txt';
+import { Txt } from '~/components/core/layout/txt/Txt';
 import { useReaderController } from '~/lib/hooks/useReaderController';
-import { Book } from '../core/layout/book/book';
+import { Book } from '~/components/core/layout/book/book';
 import { countWordsPresent, spansToString } from '~/lib/utils/textUtils';
 import { useContentApi } from '~/api/contentApi';
 import { Language } from '~/lib/types/enums/Language';
 import { useStores } from '~/lib/state/storeProvider';
 import { BottomSheetType } from '~/lib/state/stores/bottomSheetStore';
+import { LinearProgress } from '~/components/core/layout/linearProgress/linearProgress';
+import { VerticalSpacer } from '~/components/core/layout/verticalSpacer/verticalSpacer';
+import { IconButton } from '~/components/core/inputs/iconButton/iconButton';
+import { Flex } from '~/components/core/layout/flex/flex';
+import { ContentSection } from '~/api/types/contentSection';
 
 import styles from './contentReader.styles';
-import { LinearProgress } from '../core/layout/linearProgress/linearProgress';
-import { VerticalSpacer } from '../core/layout/verticalSpacer/verticalSpacer';
 
 const { width, height } = Dimensions.get('window');
 
@@ -29,10 +32,14 @@ const charHeight = 40;
 const charsPerLine = useableWidth / charWidth;
 const linesPerPage = (useableHeight / charHeight);
 
+const enrichmentBufferSize = 2;
+
 interface Props {
     contentId: string;
     progress: number;
     language: Language;
+    sections: ContentSection[];
+    sectionMap: any;
     spans: string[][];
 }
 
@@ -43,9 +50,9 @@ interface Props {
  */
 export const ContentReader = (props: Props) => {
     const { bottomSheetStore, dictionaryStore, settingStore } = useStores();
-    const { spans, contentId, progress } = props;
+    const { spans, contentId, sections, sectionMap } = props;
     const [selectedSpan, setSelectedSpan] = useState('');
-    const readerController = useReaderController({ spans, charsPerLine, linesPerPage, progress });
+    const readerController = useReaderController({ spans, charsPerLine, linesPerPage, sectionMap });
     const pagesFetched = useRef<Set<number>>(new Set<number>());
     const [pagesFetching, setPagesFetching] = useState<Set<number>>(new Set<number>());
     const dictionary = dictionaryStore.getDictionary(props.language) ?? {};
@@ -76,21 +83,16 @@ export const ContentReader = (props: Props) => {
     }
 
     useEffect(() => {
-        console.log('Fetching pages: ', pagesFetching);
-    }, [pagesFetching])
-
-    useEffect(() => {
         const enrichWords = async () => {
             if (readerController.pages) {
-                const bufferSize = 5;
                 // We are fetching too many already, employ the stop-gap.
-                if (pagesFetching.size === bufferSize) {
+                if (pagesFetching.size === enrichmentBufferSize) {
                     return;
                 }
                 const wordsPresentThreshold = 20;
                 const firstPage = readerController.page;
                 const lastPage = Math.min(
-                    readerController.page + bufferSize,
+                    readerController.page + enrichmentBufferSize,
                     readerController.totalPages
                 );
 
@@ -133,16 +135,34 @@ export const ContentReader = (props: Props) => {
         setPagesFetching(newSet);
     }
 
+    const menuOnPress = () => {
+        bottomSheetStore.setMessage({
+            type: BottomSheetType.Menu,
+            data: sections,
+            onClose: (section: ContentSection) => {
+                if (section) {
+                    // GO TO SECTION SOMEHOW!
+                    readerController.setSection(section.contentSectionId);
+                }
+            }
+        });
+    }
+
     return (
         <>
             <LinearProgress progress={readerController.complete} />
             <VerticalSpacer spacing={4} />
-            <Txt type='subtitle'>{readerController.page + 1} / {readerController.totalPages}</Txt>
+            <Flex justifySpaceBetween alignCenter style={{ width: '100%', paddingLeft: 8, paddingRight: 8 }}>
+                <IconButton icon='menu' onPress={menuOnPress} size='medium' />
+                <Txt type='subtitle'>{readerController.page + 1} / {readerController.totalPages}</Txt>
+                <View style={{ width: 40 }}/>
+            </Flex>
             <View style={styles.viewport}>
                 <Book
                     horizontalPadding={32}
                     verticalPadding={200}
                     data={readerController.pages}
+                    page={readerController.page}
                     onPageChange={readerController.setPage}
                     renderItem={({ item, index }) => (
                         <ContentReaderPage

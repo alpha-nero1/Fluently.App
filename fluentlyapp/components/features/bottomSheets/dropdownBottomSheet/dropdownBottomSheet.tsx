@@ -1,7 +1,7 @@
 import React from 'react'
 import { FlatList, TouchableOpacity, StyleSheet, View } from 'react-native';
 import { BottomSheetModal } from '~/components/core/layout/bottomSheetModal/bottomSheetModal'
-import { useColouredStyles } from '~/lib/hooks/useColours';
+import { useColouredStyles } from '~/lib/hooks/useColouredStyles';
 import { IColours } from '~/lib/themes/colours';
 
 interface IDropDownBottomSheetProps {
