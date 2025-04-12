@@ -1,6 +1,6 @@
 import React from 'react'
 import { ActivityIndicator, View, StyleSheet, Text } from 'react-native'
-import { useColouredStyles } from '~/lib/hooks/useColours';
+import { useColouredStyles } from '~/lib/hooks/useColouredStyles';
 import { IColours } from '~/lib/themes/colours';
 
 const styleFunc = (colours: IColours) => StyleSheet.create({

@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 interface ReaderControllerOptions {
     spans: string[][];
     pageWindow?: number;
     charsPerLine: number;
     linesPerPage: number;
+    sectionMap: any;
 }
 
 export interface IReaderController {
@@ -70,32 +71,42 @@ const getPages = (content: string[][], charsPerLine: number, linesPerPage: numbe
 type ReaderContext = {
     pages: string[][][];
     cursorIndices: number[];
+    reverseIndices: any;
 }
 
 export const useReaderController = (opts: ReaderControllerOptions) => {
-    const { spans, charsPerLine, linesPerPage } = opts;
+    const { spans, charsPerLine, linesPerPage, sectionMap } = opts;
     const [page, setPage] = useState(0);
 
     // Compute pages and cursor indices only when spans, charsPerLine, or linesPerPage change
-    const { pages, cursorIndices } = useMemo<ReaderContext>(() => {
+    const { pages, cursorIndices, reverseIndices } = useMemo<ReaderContext>(() => {
         const pages = getPages(spans, charsPerLine, linesPerPage);
-        const cursorIndices: number[] = [];
+        const _cursorIndices: number[] = [];
+        const _reverseIndices: any = {};
         let wordCount = 0;
 
-        pages.forEach((page) => {
+        pages.forEach((page, pageNum) => {
             page.forEach((line) => {
                 line.forEach(() => {
                     wordCount += 1;
                 });
             });
-            cursorIndices.push(wordCount);
+            _cursorIndices.push(wordCount);
+            _reverseIndices[wordCount] = pageNum;
         });
 
-        return { pages, cursorIndices };
+        return { pages, cursorIndices: _cursorIndices, reverseIndices: _reverseIndices };
     }, [spans, charsPerLine, linesPerPage]);
 
     const cursor = cursorIndices[page] || 0;
     const totalSpans = cursorIndices[cursorIndices.length - 1] + 1;
+
+    const setSection = (sectionId: number) => {
+        const spanIndex = sectionMap[sectionId];
+        const page = reverseIndices[spanIndex];
+        console.log('aa going to page', spanIndex, reverseIndices);
+        setPage(page || 37);
+    }
 
     return {
         totalPages: pages.length,
@@ -104,6 +115,7 @@ export const useReaderController = (opts: ReaderControllerOptions) => {
         totalSpans,
         pages,
         setPage,
-        complete: ((page + 1) / pages.length)
+        complete: ((page + 1) / pages.length),
+        setSection
     }
 }

@@ -7,7 +7,7 @@ import {
   ViewStyle,
   TextStyle,
 } from "react-native";
-import { useColouredStyles } from "~/lib/hooks/useColours";
+import { useColouredStyles } from '~/lib/hooks/useColouredStyles';
 
 import { styleFunc, typeStylesFunc, textStylesFunc } from './button.styles';
 

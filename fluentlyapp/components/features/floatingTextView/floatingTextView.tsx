@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { View, Animated, Dimensions } from "react-native";
-import { Txt } from "../core/layout/txt/Txt";
+import { Txt } from "~/components/core/layout/txt/Txt";
 
 import styles from './floatingTextView.styles';
 

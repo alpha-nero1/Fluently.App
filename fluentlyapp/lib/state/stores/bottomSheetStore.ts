@@ -7,6 +7,7 @@ export enum BottomSheetType {
     Subscribe,
     RevisionSettings,
     ReadNow,
+    Menu
 }
 
 export interface BottomSheetMessage {

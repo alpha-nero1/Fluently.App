@@ -1,6 +1,6 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { View, TouchableOpacity, Animated } from "react-native";
-import { useColouredStyles } from "~/lib/hooks/useColours";
+import { useColouredStyles } from '~/lib/hooks/useColouredStyles';
 
 import styleFunc from './flipCard.styles';
 

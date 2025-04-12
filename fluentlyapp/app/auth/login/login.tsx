@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { KeyboardAvoidingView, View } from 'react-native'
 import { Txt } from '~/components/core/layout/txt/Txt';
 import { Button } from '~/components/core/inputs/button/button';
-import { FloatingTextView } from '~/components/floatingTextView/floatingTextView';
+import { FloatingTextView } from '~/components/features/floatingTextView/floatingTextView';
 import { fluentlyInDifferentLanguages } from '~/lib/constants/language';
 import { TextField } from '~/components/core/inputs/textField/textField';
 import { VerticalSpacer } from '~/components/core/layout/verticalSpacer/verticalSpacer';
 import { PageView } from '~/components/core/layout/pageView/pageView';
-import { useColouredStyles } from '~/lib/hooks/useColours';
+import { useColouredStyles } from '~/lib/hooks/useColouredStyles';
 import { useI18 } from '~/lib/hooks/useI18';
 import { cognitoApi } from '~/api/cognitoApi';
 import { useStores } from '~/lib/state/storeProvider';

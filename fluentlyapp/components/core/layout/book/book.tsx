@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { View, Animated, Dimensions } from "react-native";
 
 const { width, height } = Dimensions.get("window");
@@ -7,6 +7,7 @@ interface IBookProps<T> {
     verticalPadding?: number;
     horizontalPadding?: number;
     data: T[];
+    page?: number;
     renderItem: ({ item, index }: { item: T; index: number }) => React.ReactNode;
     onPageChange?: (index: number) => void;
 }
@@ -17,7 +18,7 @@ interface IBookProps<T> {
  * 
  * Highly optimised and useful.
  */
-export const Book = <T,>({ data, renderItem, onPageChange, horizontalPadding, verticalPadding }: IBookProps<T>) => {
+export const Book = <T,>({ data, page, renderItem, onPageChange, horizontalPadding, verticalPadding }: IBookProps<T>) => {
     const totalHzPadding = (horizontalPadding || 0);
     const totalVtPadding = (verticalPadding || 0);
     const totalWidth = width - totalHzPadding
@@ -25,6 +26,17 @@ export const Book = <T,>({ data, renderItem, onPageChange, horizontalPadding, ve
 
     const flatListRef = useRef<Animated.FlatList<T>>(null);
     const scrollX = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        console.log('aa offset', (page || 0) * totalWidth)
+
+        if (flatListRef.current && typeof page !== undefined) {
+            flatListRef.current.scrollToOffset({
+                offset: (page || 0) * totalWidth,
+                animated: false
+            });
+        }
+    }, [page, totalWidth]);
 
     const handleMomentumScrollEnd = (event: any) => {
         const contentOffsetX = event.nativeEvent.contentOffset.x;

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { TextInput, TextInputProps, View } from "react-native";
-import { useColouredStyles, useColours } from "~/lib/hooks/useColours";
+import { useColouredStyles } from "~/lib/hooks/useColouredStyles";
+import { useColours } from "~/lib/hooks/useColours";
 import { Txt } from '../../layout/txt/Txt';
 import { Flex } from '../../layout/flex/flex';
 
@@ -31,7 +32,7 @@ export const TextField = (props: ITextFieldProps) => {
     const [isFocused, setIsFocused] = useState<boolean>(false);
 
     const textFieldStyles = useMemo(() => {
-        const _styles = [styles.field];
+        const _styles: any[] = [styles.field];
 
         if (isFocused) _styles.push(styles.focused);
 

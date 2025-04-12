@@ -1,6 +1,6 @@
 import { Image, ImageProps } from "react-native";
 
-const s3Uri = `https://s3.ap-southeast-2.amazonaws.com/cdn.fluently/`
+const s3Uri = `https://s3.ap-southeast-2.amazonaws.com/cdn.fluently/`;
 
 type IStaticImageProps = {
     objectKey: string;

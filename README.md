@@ -15,11 +15,17 @@ Add subscription functionality - backend and front end []
 - Learner & Learning languages seperate out because not all equal right now []
 - When open a book you are taken to where you were up to []
 - Be able to add cards raw to the set []
+- Get spash screen going []
 
 ## IN PROGRESS
 - Display & allow chapter navigation []
+    ~ Book component allow passing in of page that will snap to that page. []
+    ~ Content & ContentReader seems very very confusing, can that logic be consolidated? []
+    ~ Link buttons with grey underline []
+    ~ BUG: Clicking sound button on word bottom sheet makes the word disappear. []
 
 ## DONE
+- Data refresh on page change [✅]
 - Edit a card after it has been saved [✅]
 - Auto log in [✅]
 - Fix code not going into src control [✅] - solution documented down below.
@@ -66,8 +72,12 @@ Add subscription functionality - backend and front end []
 - Integrate sets data with the app [✅]
 - When content is enriched, the dictionary as a whole updates. [✅]
 
-## If you find fluentlyapp is not being picked up by git:
-```
-npx react-native-clean-project
-git rm --cached fluentlyapp
-```
+## Common issues
+### App wont run
+With this one you likely have build issues but are hard to find.
+1. Restart mac
+2. run `npm run ios`
+
+### If you find fluentlyapp is not being picked up by git:
+1. `npx react-native-clean-project`
+2. `git rm --cached fluentlyapp`

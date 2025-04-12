@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useApiContext } from '~/lib/hooks/useApiContext';
 import { useContentApi } from '~/api/contentApi';
-import { ContentReader } from '~/components/contentReader/contentReader';
+import { ContentReader } from '~/components/features/contentReader/contentReader';
 import { Loader } from '~/components/core/layout/loader/loader';
 import { useStores } from '~/lib/state/storeProvider';
 import { PageView } from '~/components/core/layout/pageView/pageView';
@@ -14,13 +14,16 @@ export default () => {
     const [spans, setSpans] = useState<string[][]>([]);
     const { dictionaryStore, settingStore } = useStores();
     const contentApi = useContentApi(settingStore.accessToken);
+    const [sectionMap, setSectionMap] = useState<any>({});
 
     const content = useApiContext({
         id: `content_${contentId}`,
         fetcher: () => contentApi.get(contentId, settingStore.learnerLanguage, 0, 100),
         dataInterceptor: (content) => {
             const allSpans: string[][] = [];
-            (content?.data || []).forEach(({ data: contentData }) => {
+            const _sectionMap: any = {};
+            (content?.data || []).forEach(({ data: contentData, contentSectionId }) => {
+                _sectionMap[contentSectionId] = allSpans.length;
                 // Get the lines of the content data string[]
                 const lines = contentData.split(/\r?\n/);
                 // For each line of content, process it.
@@ -31,10 +34,14 @@ export default () => {
                     }
                     allSpans.push(line.split(' '))
                 });
+
+
             });
 
             dictionaryStore.updateDictionary(content.language, content.words);
             setSpans(allSpans);
+            // The section map maps to section id to the span index.
+            setSectionMap(_sectionMap);
         }
     });
 
@@ -54,6 +61,8 @@ export default () => {
                         progress={content.data.progress}
                         language={content.data.language}
                         spans={spans} 
+                        sections={content.data.sections}
+                        sectionMap={sectionMap}
                     />
                     : null
                 }

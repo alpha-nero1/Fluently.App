@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import { useStores } from '~/lib/state/storeProvider';
 import { getColours } from '~/lib/themes/colours';
 import { useColours } from '~/lib/hooks/useColours';
 import { ReviseScreen } from './revise/revise';

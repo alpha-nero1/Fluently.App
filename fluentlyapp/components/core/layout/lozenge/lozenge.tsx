@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { useColouredStyles } from "~/lib/hooks/useColours";
+import { useColouredStyles } from '~/lib/hooks/useColouredStyles';
 import { IColours } from "~/lib/themes/colours";
 
 // Define possible status types

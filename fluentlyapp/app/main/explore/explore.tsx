@@ -21,16 +21,9 @@ export const ExploreScreen = () => {
 
     const content = useApiContext({
         id: `explore_content-${settingStore.learningLanguage}`,
+        refreshable: true,
         fetcher: () => contentApi.list(settingStore.learningLanguage)
     });
-
-    useFocusEffect(
-        useCallback(() => {
-            if (!content.data?.data?.length) {
-                content.refresh();
-            }
-        }, [])
-    );
 
     const contentGroupedByCateories = useMemo(() => {
         const map: { [key in string]: IExploreListCategory<BasicContent> } = {};

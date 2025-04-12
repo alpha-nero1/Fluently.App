@@ -2,7 +2,7 @@ import { View, Text, Dimensions, TouchableWithoutFeedback } from "react-native";
 import { VerticalSpacer } from "~/components/core/layout/verticalSpacer/verticalSpacer";
 import { Word } from "~/api/types/word";
 import { useStores } from "~/lib/state/storeProvider";
-import { useColouredStyles } from "~/lib/hooks/useColours";
+import { useColouredStyles } from '~/lib/hooks/useColouredStyles';
 import { LoadingText } from "~/components/core/layout/loadingText/loadingText";
 import { Flex } from "~/components/core/layout/flex/flex";
 import { Txt } from "~/components/core/layout/txt/Txt";

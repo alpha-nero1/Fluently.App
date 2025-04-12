@@ -3,14 +3,14 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { SetCard } from '~/api/types/setCard';
 import { FlipCard } from '~/components/core/layout/flipCard/flipCard';
 import { SetCardGrade } from '~/lib/types/enums/SetCardGrade';
-import { UnrevealedWordContent } from '~/components/wordContent/unrevealedWordContent/unrevealedWordConten';
-import { RevealedWordContent } from '~/components/wordContent/revealedWordContent/revealedWordContent';
+import { UnrevealedWordContent } from '~/components/features/wordContent/unrevealedWordContent/unrevealedWordConten';
+import { RevealedWordContent } from '~/components/features/wordContent/revealedWordContent/revealedWordContent';
 import { Flex } from '~/components/core/layout/flex/flex';
 import { Txt } from '~/components/core/layout/txt/Txt';
 import { useI18 } from '~/lib/hooks/useI18';
+import { useColouredStyles } from '~/lib/hooks/useColouredStyles';
 
 import styleFunc from './studyCard.styles';
-import { useColouredStyles } from '~/lib/hooks/useColours';
 
 interface IStudyCardProps {
     height: number;

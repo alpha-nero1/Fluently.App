@@ -1,8 +1,7 @@
 import React from 'react'
 import { PageView } from '~/components/core/layout/pageView/pageView'
 import { Txt } from '~/components/core/layout/txt/Txt'
-import { IRegisterData, RegisterWorkflow } from '~/components/registerWorkflow/registerWorkflow'
-import Toast from 'react-native-toast-message';
+import { IRegisterData, RegisterWorkflow } from '~/components/features/registerWorkflow/registerWorkflow'
 import { useI18 } from '~/lib/hooks/useI18';
 import { cognitoApi } from '~/api/cognitoApi';
 import { useStores } from '~/lib/state/storeProvider';
